@@ -1114,13 +1114,13 @@ a:focus-visible {
 .ecosystem-backdrop {
   z-index: -3;
   object-fit: cover;
-  filter: saturate(0.72) brightness(0.58) contrast(1.08);
+  filter: saturate(0.76) brightness(0.84) contrast(1.04);
 }
 
 .ecosystem-screen {
   z-index: -2;
   background:
-    linear-gradient(rgba(0, 0, 128, 0.22), rgba(35, 0, 53, 0.35)),
+    linear-gradient(rgba(0, 0, 128, 0.12), rgba(35, 0, 53, 0.2)),
     repeating-linear-gradient(
       0deg,
       rgba(255, 255, 255, 0.04) 0,
@@ -1239,6 +1239,9 @@ a:focus-visible {
   width: 108px;
   height: 81px;
   margin: 0 auto;
+  padding: 3px;
+  border: 2px inset #eee;
+  background: rgba(238, 238, 238, 0.92);
   object-fit: contain;
   image-rendering: pixelated;
 }

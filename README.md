@@ -1,4 +1,4 @@
-# Кинематограф личности — GeoCities edition
+# Кинематограф личности — GeoCities edition 0.3
 
 Самостоятельная статическая сборка страницы курса без React, Next.js, CMS и конструкторов.
 
@@ -54,3 +54,12 @@ python3 scripts/build_single_file.py
 9. следующий шаг.
 
 Дополнительно возвращена таблица форматов участия из презентации курса. Стоимость намеренно не указана: в приложенных исходниках она отсутствует, поэтому перед финальной продажной публикацией её нужно подтвердить.
+
+## Версии
+
+- `course-geocities-vintage-v1` — зафиксированная первая опубликованная версия;
+- `course-geocities` — текущая рабочая и публичная версия.
+
+В версии 0.3 одинаковые секции заменены самостоятельными режимами: route map, character select, level select, inventory, world map, guestbook, personal home page, system requirements, help desk и player mode select.
+
+Дополнительные анимированные элементы подобраны в [GifCities](https://gifcities.org/) — архиве GIF с сайтов GeoCities от Internet Archive. В интерфейсе используются прямые архивные URL `blob.gifcities.org`; при включённой системной настройке `prefers-reduced-motion` необязательные анимации скрываются.

@@ -103,6 +103,47 @@ def make_new():
     save_gif(frames, "new.gif", 220)
 
 
+def make_happy_feedback():
+    frames = []
+    for phase in range(6):
+        image = transparent((112, 82))
+        draw = ImageDraw.Draw(image)
+        pulse = phase % 3
+        face_fill = ("#fff239", "#ff8bd1", "#8ff6ff")[pulse]
+        draw.ellipse((24, 10, 88, 74), fill=face_fill, outline="#111111", width=3)
+        draw.ellipse((40, 31, 47, 39), fill="#111111")
+        draw.ellipse((65, 31, 72, 39), fill="#111111")
+        draw.arc((39, 34, 73, 62), 10, 170, fill="#111111", width=4)
+        draw.rectangle((50, 57, 62, 61), fill="#ffffff", outline="#111111")
+
+        star_shift = 2 if phase % 2 else 0
+        for x, y, color in [
+            (10, 18 + star_shift, "#ff3ba7"),
+            (94, 12 - star_shift, "#51e9ff"),
+            (8, 58 - star_shift, "#6bff53"),
+            (96, 57 + star_shift, "#ff8138"),
+        ]:
+            draw.polygon(
+                [
+                    (x, y - 7),
+                    (x + 2, y - 2),
+                    (x + 7, y),
+                    (x + 2, y + 2),
+                    (x, y + 7),
+                    (x - 2, y + 2),
+                    (x - 7, y),
+                    (x - 2, y - 2),
+                ],
+                fill=color,
+                outline="#111111",
+            )
+
+        draw.rectangle((20, 69, 92, 81), fill="#000080", outline="#ffffff")
+        draw.text((25, 71), "VERY GOOD!", font=font(9, True), fill="#ffffff")
+        frames.append(image)
+    save_gif(frames, "happy-feedback.gif", 170)
+
+
 def make_write_me():
     frames = []
     for phase in range(4):
@@ -318,6 +359,7 @@ if __name__ == "__main__":
     make_disc()
     make_camera()
     make_new()
+    make_happy_feedback()
     make_write_me()
     make_banner()
     make_class_icons()

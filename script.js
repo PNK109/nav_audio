@@ -184,7 +184,11 @@ const moduleIcon = document.querySelector("#module-icon");
 
 function showModule(index) {
   const data = modules[index];
-  moduleTabs.forEach((tab) => tab.classList.toggle("is-active", Number(tab.dataset.module) === index));
+  moduleTabs.forEach((tab) => {
+    const isActive = Number(tab.dataset.module) === index;
+    tab.classList.toggle("is-active", isActive);
+    tab.setAttribute("aria-pressed", isActive ? "true" : "false");
+  });
   moduleNumber.textContent = String(index + 1).padStart(2, "0");
   moduleCount.textContent = data.count;
   moduleDuration.textContent = data.duration;
@@ -244,5 +248,30 @@ formatChoices.forEach((choice) => {
   choice.addEventListener("click", () => selectFormat(choice.dataset.format));
 });
 
+const kiosk = document.querySelector("[data-kiosk]");
+const kioskSwitch = kiosk?.querySelector(".kiosk-switch");
+const kioskMessage = kiosk?.querySelector(".kiosk-message");
+const kioskInterior = kiosk?.querySelector(".kiosk-interior");
+const kioskLinks = kioskInterior ? [...kioskInterior.querySelectorAll("a")] : [];
+
+function setKioskOpen(isOpen) {
+  if (!kiosk || !kioskSwitch || !kioskMessage || !kioskInterior) return;
+
+  kiosk.classList.toggle("is-open", isOpen);
+  kioskSwitch.setAttribute("aria-expanded", isOpen ? "true" : "false");
+  kioskSwitch.textContent = isOpen ? "[ CLOSE SHOP ]" : "[ OPEN SHOP ]";
+  kioskMessage.textContent = isOpen
+    ? "STATUS :: OPEN / SELECT A DESTINATION"
+    : "STATUS :: CLOSED / CLICK TO ENTER";
+  kioskInterior.setAttribute("aria-hidden", isOpen ? "false" : "true");
+  kioskLinks.forEach((link) => link.setAttribute("tabindex", isOpen ? "0" : "-1"));
+}
+
+kioskSwitch?.addEventListener("click", () => {
+  setKioskOpen(!kiosk.classList.contains("is-open"));
+});
+
 selectFormat("solo");
 showReview(0);
+showModule(0);
+setKioskOpen(false);

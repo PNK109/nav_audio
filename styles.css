@@ -2831,6 +2831,29 @@ a:focus-visible {
   }
 }
 
+
+html.is-embedded body {
+  background-attachment: scroll;
+}
+
+html.is-embedded .cursor-trail {
+  display: none !important;
+}
+
+.motion-region:not(.is-near-viewport) * {
+  animation-play-state: paused !important;
+}
+
+html.is-embedded .reward-item > span:first-child {
+  background-attachment: scroll, scroll, scroll;
+}
+
+@media (max-width: 680px), (prefers-reduced-motion: reduce) {
+  .film-grain {
+    opacity: 0.085;
+  }
+}
+
 @media print {
   .browser-strip,
   .sidebar,

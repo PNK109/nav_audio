@@ -248,30 +248,39 @@ formatChoices.forEach((choice) => {
   choice.addEventListener("click", () => selectFormat(choice.dataset.format));
 });
 
-const kiosk = document.querySelector("[data-kiosk]");
-const kioskSwitch = kiosk?.querySelector(".kiosk-switch");
-const kioskMessage = kiosk?.querySelector(".kiosk-message");
-const kioskInterior = kiosk?.querySelector(".kiosk-interior");
-const kioskLinks = kioskInterior ? [...kioskInterior.querySelectorAll("a")] : [];
+const trailAllowed =
+  window.matchMedia("(pointer: fine)").matches &&
+  !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-function setKioskOpen(isOpen) {
-  if (!kiosk || !kioskSwitch || !kioskMessage || !kioskInterior) return;
+if (trailAllowed) {
+  const trailColors = ["#ff2ba6", "#fff239", "#2ed8ff", "#6dff72"];
+  let lastTrailPoint = 0;
+  let trailIndex = 0;
 
-  kiosk.classList.toggle("is-open", isOpen);
-  kioskSwitch.setAttribute("aria-expanded", isOpen ? "true" : "false");
-  kioskSwitch.textContent = isOpen ? "[ CLOSE SHOP ]" : "[ OPEN SHOP ]";
-  kioskMessage.textContent = isOpen
-    ? "STATUS :: OPEN / SELECT A DESTINATION"
-    : "STATUS :: CLOSED / CLICK TO ENTER";
-  kioskInterior.setAttribute("aria-hidden", isOpen ? "false" : "true");
-  kioskLinks.forEach((link) => link.setAttribute("tabindex", isOpen ? "0" : "-1"));
+  window.addEventListener(
+    "pointermove",
+    (event) => {
+      const now = performance.now();
+      if (now - lastTrailPoint < 34) return;
+      lastTrailPoint = now;
+
+      const fleck = document.createElement("i");
+      fleck.className = "cursor-trail-fleck";
+      fleck.setAttribute("aria-hidden", "true");
+      fleck.style.left = `${event.clientX}px`;
+      fleck.style.top = `${event.clientY}px`;
+      fleck.style.setProperty("--trail-color", trailColors[trailIndex % trailColors.length]);
+      fleck.style.setProperty("--trail-x", `${-8 - (trailIndex % 4) * 3}px`);
+      fleck.style.setProperty("--trail-y", `${8 + (trailIndex % 3) * 4}px`);
+      fleck.style.setProperty("--trail-turn", `${(trailIndex % 2 ? -1 : 1) * 72}deg`);
+      document.body.append(fleck);
+      trailIndex += 1;
+      fleck.addEventListener("animationend", () => fleck.remove(), { once: true });
+    },
+    { passive: true }
+  );
 }
-
-kioskSwitch?.addEventListener("click", () => {
-  setKioskOpen(!kiosk.classList.contains("is-open"));
-});
 
 selectFormat("solo");
 showReview(0);
 showModule(0);
-setKioskOpen(false);

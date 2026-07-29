@@ -2447,6 +2447,10 @@ a:focus-visible {
     min-height: 86px;
   }
 
+  .route-course {
+    min-height: 210px;
+  }
+
   .route-arrow-link {
     width: 190px;
     height: 40px;
@@ -2640,7 +2644,7 @@ a:focus-visible {
   }
 
   .final-section > img:first-of-type {
-    right: 24%;
+    right: 10%;
     bottom: 0;
     width: min(560px, 154vw);
     max-width: none;

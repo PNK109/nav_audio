@@ -178,6 +178,8 @@ const moduleSubtitle = document.querySelector("#module-subtitle");
 const moduleLessons = document.querySelector("#module-lessons");
 const modulePractice = document.querySelector("#module-practice");
 const moduleResult = document.querySelector("#module-result");
+const moduleStage = document.querySelector("#module-stage");
+const moduleProgress = document.querySelector("#module-progress");
 
 function showModule(index) {
   const data = modules[index];
@@ -189,6 +191,8 @@ function showModule(index) {
   moduleSubtitle.textContent = data.subtitle;
   modulePractice.textContent = data.practice;
   moduleResult.textContent = data.result;
+  moduleStage.textContent = `STAGE ${String(index + 1).padStart(2, "0")}`;
+  moduleProgress.style.width = `${((index + 1) / modules.length) * 100}%`;
   moduleLessons.replaceChildren(
     ...data.lessons.map((lesson) => {
       const item = document.createElement("li");
@@ -222,4 +226,21 @@ function showReview(index) {
 document.querySelector("#review-prev").addEventListener("click", () => showReview(currentReview - 1));
 document.querySelector("#review-next").addEventListener("click", () => showReview(currentReview + 1));
 
+const formatChoices = document.querySelectorAll(".format-choice");
+const formatsTable = document.querySelector(".formats-table");
+
+function selectFormat(format) {
+  formatsTable.dataset.selected = format;
+  formatChoices.forEach((choice) => {
+    const isSelected = choice.dataset.format === format;
+    choice.classList.toggle("is-selected", isSelected);
+    choice.setAttribute("aria-pressed", isSelected ? "true" : "false");
+  });
+}
+
+formatChoices.forEach((choice) => {
+  choice.addEventListener("click", () => selectFormat(choice.dataset.format));
+});
+
+selectFormat("solo");
 showReview(0);

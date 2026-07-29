@@ -7,7 +7,7 @@ const diagnostics = {
   },
   form: {
     archetype: "АРХИТЕКТОР",
-    title: "Смысл уже есть — ему нужна конструкция",
+    title: "Смысл уже есть: ему нужна конструкция",
     text: "Личный конфликт станет ясной структурой, посильным форматом и визуальной библией проекта.",
     route: "история → язык → тесты"
   },
@@ -32,7 +32,7 @@ const modules = [
     count: "4 урока + ДЗ",
     duration: "2:43:27",
     lessons: [
-      "Творчество как опора — части 1 и 2",
+      "Творчество как опора: части 1 и 2",
       "Живое мышление в эпоху алгоритмов и ИИ",
       "Самопрезентация и новая модель личного бренда"
     ],
@@ -115,12 +115,12 @@ const reviews = [
   {
     name: "Владислав",
     date: "03.07.2026",
-    text: "Меня зацепила тема false color и цветовых контрастов — вещи, о которых я не задумывался. Четвёртая глава дала общее понимание, куда стоит направить вектор развития в будущем."
+    text: "Меня зацепила тема false color и цветовых контрастов. Раньше я о таких вещах не задумывался. Четвёртая глава дала общее понимание, куда стоит направить вектор развития в будущем."
   },
   {
     name: "Владислав",
     date: "03.07.2026",
-    text: "Домашки — восторг. Особенно по четвёртому блоку. Подробное описание к посту сильно облегчило его написание, а само написание помогло разобраться в собственной идее."
+    text: "Домашки просто восторг. Особенно по четвёртому блоку. Подробное описание к посту сильно облегчило его написание, а само написание помогло разобраться в собственной идее."
   },
   {
     name: "Vyacheslav Chuprow",
@@ -184,7 +184,11 @@ const moduleIcon = document.querySelector("#module-icon");
 
 function showModule(index) {
   const data = modules[index];
-  moduleTabs.forEach((tab) => tab.classList.toggle("is-active", Number(tab.dataset.module) === index));
+  moduleTabs.forEach((tab) => {
+    const isActive = Number(tab.dataset.module) === index;
+    tab.classList.toggle("is-active", isActive);
+    tab.setAttribute("aria-pressed", isActive ? "true" : "false");
+  });
   moduleNumber.textContent = String(index + 1).padStart(2, "0");
   moduleCount.textContent = data.count;
   moduleDuration.textContent = data.duration;
@@ -244,5 +248,152 @@ formatChoices.forEach((choice) => {
   choice.addEventListener("click", () => selectFormat(choice.dataset.format));
 });
 
+const trailAllowed =
+  window.matchMedia("(pointer: fine)").matches &&
+  !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+if (trailAllowed) {
+  const canvas = document.createElement("canvas");
+  const context = canvas.getContext("2d");
+  const points = [];
+  const trailLength = 280;
+  const trailLifetime = 680;
+  let frame = 0;
+
+  canvas.className = "cursor-trail";
+  canvas.setAttribute("aria-hidden", "true");
+  document.body.append(canvas);
+
+  function sizeTrailCanvas() {
+    const ratio = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.round(window.innerWidth * ratio);
+    canvas.height = Math.round(window.innerHeight * ratio);
+    context.setTransform(ratio, 0, 0, ratio, 0, 0);
+  }
+
+  function trimTrail(now) {
+    while (points.length && now - points[0].time > trailLifetime) points.shift();
+
+    let distance = 0;
+    for (let index = points.length - 1; index > 0; index -= 1) {
+      distance += Math.hypot(
+        points[index].x - points[index - 1].x,
+        points[index].y - points[index - 1].y
+      );
+      if (distance > trailLength) {
+        points.splice(0, index);
+        break;
+      }
+    }
+  }
+
+  function drawTrail(now) {
+    frame = 0;
+    trimTrail(now);
+    context.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+    if (points.length > 1) {
+      const first = points[0];
+      const last = points[points.length - 1];
+      const gradient = context.createLinearGradient(first.x, first.y, last.x, last.y);
+      const freshness = Math.max(0, 1 - (now - last.time) / trailLifetime);
+
+      gradient.addColorStop(0, "rgba(255, 255, 255, 0)");
+      gradient.addColorStop(0.42, `rgba(255, 255, 255, ${0.28 * freshness})`);
+      gradient.addColorStop(1, `rgba(255, 255, 255, ${0.96 * freshness})`);
+
+      context.beginPath();
+      context.moveTo(first.x, first.y);
+      for (let index = 1; index < points.length - 1; index += 1) {
+        const point = points[index];
+        const next = points[index + 1];
+        context.quadraticCurveTo(
+          point.x,
+          point.y,
+          (point.x + next.x) / 2,
+          (point.y + next.y) / 2
+        );
+      }
+      context.lineTo(last.x, last.y);
+      context.strokeStyle = gradient;
+      context.lineWidth = 2.2;
+      context.lineCap = "round";
+      context.lineJoin = "round";
+      context.shadowColor = "rgba(0, 0, 0, 0.28)";
+      context.shadowBlur = 3;
+      context.stroke();
+      context.shadowBlur = 0;
+    }
+
+    if (points.length) frame = requestAnimationFrame(drawTrail);
+  }
+
+  function requestTrailFrame() {
+    if (!frame) frame = requestAnimationFrame(drawTrail);
+  }
+
+  window.addEventListener("pointermove", (event) => {
+    const events = event.getCoalescedEvents ? event.getCoalescedEvents() : [event];
+    const now = performance.now();
+    events.forEach((sample, index) => {
+      points.push({
+        x: sample.clientX,
+        y: sample.clientY,
+        time: now - (events.length - index - 1)
+      });
+    });
+    requestTrailFrame();
+  }, { passive: true });
+
+  window.addEventListener("resize", sizeTrailCanvas, { passive: true });
+  document.documentElement.addEventListener("mouseleave", () => {
+    points.length = 0;
+    context.clearRect(0, 0, window.innerWidth, window.innerHeight);
+  });
+
+  sizeTrailCanvas();
+}
+
+const grass = document.querySelector("#procedural-grass");
+
+function buildGrass() {
+  if (!grass) return;
+
+  let seed = Math.max(320, window.innerWidth) + 109;
+  const random = () => {
+    seed = (seed * 1664525 + 1013904223) >>> 0;
+    return seed / 4294967296;
+  };
+  const bladeCount = Math.min(220, Math.max(64, Math.ceil(window.innerWidth / 7)));
+  const fragment = document.createDocumentFragment();
+  const colors = ["#4f9c35", "#68ad3d", "#3f842f", "#82bd43", "#2f7429"];
+
+  for (let index = 0; index < bladeCount; index += 1) {
+    const blade = document.createElement("i");
+    const spread = ((index + random() * 0.9) / bladeCount) * 100;
+    const angle = -7 + random() * 14;
+
+    blade.className = "grass-blade";
+    blade.style.setProperty("--grass-x", `${spread.toFixed(2)}%`);
+    blade.style.setProperty("--grass-height", `${Math.round(34 + random() * 62)}px`);
+    blade.style.setProperty("--grass-width", `${Math.round(3 + random() * 4)}px`);
+    blade.style.setProperty("--grass-angle", `${angle.toFixed(1)}deg`);
+    blade.style.setProperty("--grass-speed", `${(0.72 + random() * 1.05).toFixed(2)}s`);
+    blade.style.setProperty("--grass-delay", `${(-random() * 1.8).toFixed(2)}s`);
+    blade.style.setProperty("--grass-color", colors[Math.floor(random() * colors.length)]);
+    fragment.append(blade);
+  }
+
+  grass.replaceChildren(fragment);
+}
+
+let grassResizeFrame = 0;
+window.addEventListener("resize", () => {
+  cancelAnimationFrame(grassResizeFrame);
+  grassResizeFrame = requestAnimationFrame(buildGrass);
+}, { passive: true });
+
+buildGrass();
 selectFormat("solo");
 showReview(0);
+showModule(0);

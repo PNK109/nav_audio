@@ -127,18 +127,17 @@
 
           <div class="route-visual" role="group" aria-label="Путь из точки А через курс в точку Б">
             <div class="route-station route-station--a">
-              <span>start</span>
-              <strong>точка а</strong>
-              <small>«я умею, но не понимаю, что хочу сказать»</small>
+              <strong>.A</strong>
+              <small>я умею, но не понимаю, что хочу сказать</small>
             </div>
             <div class="route-course">
-              <a href="#program">КУРС</a>
-              <img class="route-arrow-gif" src="assets/gif/route.gif" alt="" width="225" height="40" loading="lazy">
-              <small>один проект вместо разрозненных домашних работ</small>
+              <a class="route-arrow-link" href="#program" aria-label="Перейти к программе курса">
+                <img class="route-arrow-gif" src="assets/gif/route.gif" alt="" width="225" height="40">
+                <span>КУРС</span>
+              </a>
             </div>
             <div class="route-station route-station--b">
-              <span>DESTINATION</span>
-              <strong>ТОЧКА Б</strong>
+              <strong>.B</strong>
               <small>законченная форма и понятный следующий шаг</small>
             </div>
           </div>
@@ -430,7 +429,7 @@
 
           <article class="guestbook-entry" aria-live="polite">
             <div class="guestbook-head">
-              <img class="review-reaction" src="assets/gif/happy-feedback.gif" alt="Очень положительная реакция" width="112" height="82" loading="lazy">
+              <img class="review-reaction" src="assets/gif/happy-feedback.gif" alt="Очень положительная реакция" width="112" height="82">
               <p class="guestbook-meta">
                 ENTRY <span id="review-number">01</span> OF <span id="review-total">08</span><br>
                 FROM: <strong id="review-name">Владислав</strong><br>
@@ -457,11 +456,11 @@
             <div class="author-log">
               <p><span>01 / ФОРМА</span>Много лет моим главным фокусом была форма: изображение, монтаж и визуальный язык.</p>
               <p><span>02 / КРИЗИС</span>Со временем стало ясно: даже безупречная форма не отвечает на главный вопрос, что именно ты хочешь сказать и зачем это создавать. Внутренний кризис заставил меня на несколько лет погрузиться в исследование творчества, личности и смыслов.</p>
-              <p><span>03 / ПЕРЕДАЧА</span>Здесь я передаю <strong class="author-accent author-accent--experience">личный опыт</strong> и <strong class="author-accent author-accent--thinking">способ мышления</strong>: поиск, принятие решений и систему.</p>
+              <p><span>03 / ПЕРЕДАЧА</span>Здесь я передаю <strong>личный опыт</strong> и <strong>способ мышления</strong>: поиск, принятие решений и систему.</p>
             </div>
-            <img src="assets/egor-author-sketch.jpg" alt="Егор Панковский" width="240" height="240">
+            <img class="author-matrix-gif" src="assets/gif/keanu-matrix.gif" alt="Киану Ривз в фильме «Матрица»" width="220" height="163">
           </div>
-          <div class="author-links" aria-label="Ссылки Егора Панковского">
+          <div class="author-links" role="group" aria-label="Ссылки Егора Панковского">
             <a href="https://навь.com/109" target="_blank" rel="noreferrer"><b>ПОРТФОЛИО</b><span>смотреть работы →</span></a>
             <a href="https://www.youtube.com/@pankovskii" target="_blank" rel="noreferrer"><b>YOUTUBE</b><span>открыть канал →</span></a>
           </div>
@@ -487,7 +486,7 @@
           <p class="section-path">07 / USER_COMPATIBILITY.CHK</p>
           <p class="mode-kicker">SYSTEM REQUIREMENTS</p>
           <h2>КОМУ ПОДХОДИТ КУРС?</h2>
-          <div class="audience-grid" aria-label="Кому подходит и не подходит курс">
+          <div class="audience-grid" role="group" aria-label="Кому подходит и не подходит курс">
             <article class="audience-card audience-card--yes">
               <h3><span>✓</span> YES / ДА, ЕСЛИ ВЫ</h3>
               <ul>
@@ -610,7 +609,6 @@
           <h2>ГОТОВНОСТЬ НЕ ПРИХОДИТ<br><span>ДО НАЧАЛА РАБОТЫ</span></h2>
           <p class="final-copy">Автором становятся внутри процесса: через решения, ошибки и законченные проекты. Обсудим вашу точку входа и выберем посильный маршрут.</p>
           <p class="final-action">
-            <img src="assets/gif/spark.gif" alt="" width="24" height="24">
             <a class="image-button image-button--large" href="https://t.me/pankovskiii">[ НАПИСАТЬ ЕГОРУ ]</a>
           </p>
         </section>
@@ -627,7 +625,7 @@
       </p>
       <p>© 2026 ЕГОР ПАНКОВСКИЙ / НАВЬ. НЕОФИЦИАЛЬНО ОПТИМИЗИРОВАНО ДЛЯ МОДЕМА 56K.</p>
       <p class="microsoft-ad">
-        <img src="assets/gif/microsoft-brasil.gif" alt="Ретро-реклама Microsoft" width="180" height="43" loading="lazy">
+        <img src="assets/gif/microsoft-brasil.gif" alt="Ретро-реклама Microsoft" width="180" height="43">
       </p>
     </footer>
   </div>

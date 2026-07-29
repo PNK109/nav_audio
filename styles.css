@@ -52,6 +52,16 @@ body {
   line-height: var(--leading-body);
 }
 
+@media (pointer: fine) {
+  html,
+  body,
+  body *,
+  body *::before,
+  body *::after {
+    cursor: url("https://static.tildacdn.com/tild3661-6230-4636-b938-663264363538/__2.webp") 0 0, auto !important;
+  }
+}
+
 img {
   max-width: 100%;
   height: auto;
@@ -1209,7 +1219,9 @@ a:focus-visible {
   border: 2px inset #f5f5f5;
   background:
     repeating-linear-gradient(0deg, rgba(0, 0, 128, 0.035) 0 1px, transparent 1px 3px),
-    #f5f5ef;
+    rgba(245, 245, 239, 0.62);
+  -webkit-backdrop-filter: blur(1.2px) saturate(0.96);
+  backdrop-filter: blur(1.2px) saturate(0.96);
   box-shadow: inset 0 0 0 1px #777;
   color: #111;
   font-family: var(--system);
@@ -2837,7 +2849,9 @@ html.is-embedded body {
 }
 
 html.is-embedded .cursor-trail {
-  display: none !important;
+  position: absolute;
+  inset: auto 0 auto 0;
+  display: block;
 }
 
 .motion-region:not(.is-near-viewport) * {

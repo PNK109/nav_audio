@@ -116,6 +116,7 @@
     tileContext.putImageData(image, 0, 0);
     grainContext.fillStyle = grainContext.createPattern(tile, "repeat");
     grainContext.fillRect(0, 0, grain.width, grain.height);
+    grain.dataset.frame = String((Number(grain.dataset.frame) || 0) + 1);
   }
 
   function stopNoise() {

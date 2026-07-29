@@ -13,9 +13,14 @@
   --lavender: #f3eaff;
   --mint: #e8fff3;
   --peach: #fff0dc;
-  --system: Arial, "Helvetica Neue", Helvetica, sans-serif;
-  --serif: "Times New Roman", Times, serif;
-  --mono: "Courier New", Courier, monospace;
+  --win95-silver: #c0c0c0;
+  --win95-shadow: #808080;
+  --win95-dark-shadow: #000;
+  --win95-highlight: #fff;
+  --win95-green: #008000;
+  --system: "MS Sans Serif", Arial, sans-serif;
+  --serif: "MS Serif", "Times New Roman", serif;
+  --mono: Fixedsys, "Courier New", monospace;
   --type-micro: 11px;
   --type-ui: 12px;
   --type-small: 13px;
@@ -29,11 +34,13 @@
 }
 
 html {
+  overflow-x: hidden;
   scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
+  overflow-x: hidden;
   color: var(--ink);
   background-color: var(--sky);
   background-image: url("assets/sky-tile.jpg");
@@ -105,6 +112,18 @@ a:focus-visible {
   inset: 0;
   width: 100vw;
   height: 100vh;
+  pointer-events: none;
+}
+
+.film-grain {
+  position: fixed;
+  z-index: 9998;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  opacity: 0.14;
+  mix-blend-mode: soft-light;
+  image-rendering: pixelated;
   pointer-events: none;
 }
 
@@ -269,11 +288,11 @@ a:focus-visible {
   background:
     conic-gradient(
       from 18deg,
-      rgba(255, 0, 196, 0.18),
-      rgba(0, 216, 255, 0.14),
-      rgba(255, 255, 255, 0.38),
-      rgba(94, 255, 0, 0.12),
-      rgba(255, 0, 196, 0.18)
+      rgba(255, 0, 255, 0.16) 0 18%,
+      rgba(0, 255, 255, 0.14) 18% 36%,
+      rgba(255, 255, 255, 0.34) 36% 48%,
+      rgba(0, 255, 0, 0.12) 48% 68%,
+      rgba(255, 0, 255, 0.16) 68% 100%
     ),
     radial-gradient(circle at 50% 50%, transparent 0 16%, rgba(255, 255, 255, 0.1) 16.5% 17%, transparent 17.5%);
   mix-blend-mode: screen;
@@ -286,8 +305,12 @@ a:focus-visible {
   left: 45%;
   width: 16%;
   height: 114%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
-  filter: blur(2px);
+  background: linear-gradient(
+    90deg,
+    transparent 0 38%,
+    rgba(255, 255, 255, 0.48) 38% 62%,
+    transparent 62% 100%
+  );
   transform: rotate(18deg);
 }
 
@@ -385,7 +408,7 @@ a:focus-visible {
   padding: 8px 14px;
   border: 2px solid #000;
   background: #fff239;
-  box-shadow: 4px 4px 0 #ff2ba6;
+  box-shadow: 4px 4px 0 #000;
   color: #000;
   font: bold 15px/1.22 var(--system);
   letter-spacing: 0.01em;
@@ -489,46 +512,64 @@ a:focus-visible {
   width: 100%;
   border: 2px ridge #eee;
   border-spacing: 2px;
-  background: rgba(226, 226, 226, 0.94);
+  background: rgba(192, 192, 192, 0.96);
   font-size: 12px;
 }
 
 .side-table caption {
-  padding: 3px;
-  background: rgba(255, 255, 255, 0.78);
-  color: #000;
+  padding: 4px 7px;
+  background: var(--navy);
+  color: #fff;
   font: bold 11px/1.2 var(--system);
+  text-align: left;
 }
 
-.side-table:not(.side-table--small) tbody,
-.side-table:not(.side-table--small) tr {
-  display: block;
+.side-table:not(.side-table--small) tbody {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 3px;
+  padding: 3px;
 }
 
 .side-table:not(.side-table--small) tr {
-  display: inline;
+  display: contents;
 }
 
 .side-table:not(.side-table--small) th {
-  display: inline;
+  display: block;
   padding: 0;
-  border: 0;
-  background: transparent;
+  border: 2px outset var(--win95-highlight);
+  background: var(--win95-silver);
   font-weight: normal;
 }
 
 .side-table:not(.side-table--small) th::after {
-  content: " | ";
-  color: #333;
-}
-
-.side-table:not(.side-table--small) tr:last-child th::after {
   content: "";
 }
 
 .side-table a {
-  color: var(--blue);
-  text-decoration: underline;
+  display: flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 4px;
+  color: #000;
+  flex-direction: column;
+  text-decoration: none;
+}
+
+.side-table a:hover,
+.side-table a:focus-visible {
+  background: #fff;
+  color: #000;
+}
+
+.side-table a small {
+  display: block;
+  margin-top: 3px;
+  color: var(--navy);
+  font: 9px/1.05 var(--system);
+  letter-spacing: 0.02em;
 }
 
 .side-card,
@@ -692,21 +733,16 @@ a:focus-visible {
 }
 
 .route-section h2::before {
-  content: "ROUTE_01 > ";
-  display: block;
-  margin-bottom: 7px;
-  color: var(--red);
-  font: bold var(--type-micro)/1 var(--system);
-  letter-spacing: 0;
-  vertical-align: middle;
+  content: none;
 }
 
 .route-emphasis {
   width: fit-content;
   max-width: 100%;
   padding: 5px 10px;
-  background: linear-gradient(90deg, #fff238 0%, #ff79d1 48%, #8ee9ff 100%);
-  box-shadow: 3px 3px 0 rgba(0, 0, 128, 0.3);
+  border: 2px outset #fff;
+  background: #ffff00;
+  box-shadow: 3px 3px 0 #000;
   color: #000080;
   font-size: var(--type-body-large);
   text-align: center;
@@ -816,7 +852,7 @@ a:focus-visible {
 }
 
 .diagnostic-box::before {
-  content: "C:\\NAV\\COURSE\\CHARACTER_SELECT.EXE                    [_][□][X]";
+  content: "БЫСТРАЯ ДИАГНОСТИКА                              [_][□][X]";
   display: block;
   overflow: hidden;
   padding: 4px 7px;
@@ -936,7 +972,7 @@ a:focus-visible {
   padding: 9px 13px;
   border: 2px ridge #fff;
   background: #fff4a9;
-  box-shadow: 2px 2px 0 #ff2ba6;
+  box-shadow: 2px 2px 0 #000;
   color: #65005d;
   font-size: var(--type-body);
   font-weight: bold;
@@ -1330,8 +1366,8 @@ a:focus-visible {
 
 .ecosystem-screen {
   z-index: -2;
+  background-color: rgba(0, 0, 128, 0.16);
   background:
-    linear-gradient(rgba(0, 0, 128, 0.12), rgba(35, 0, 53, 0.2)),
     repeating-linear-gradient(
       0deg,
       rgba(255, 255, 255, 0.04) 0,
@@ -1440,7 +1476,7 @@ a:focus-visible {
   min-height: 112px;
   border: 2px dashed rgba(255, 255, 255, 0.82);
   background: rgba(0, 0, 128, 0.74);
-  box-shadow: 0 0 0 4px rgba(255, 43, 166, 0.22);
+  box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.34);
   translate: -50% -50%;
   animation: hub-pulse 1.7s steps(2, end) infinite;
 }
@@ -1477,15 +1513,15 @@ a:focus-visible {
     filter: brightness(1.16);
     box-shadow:
       3px 3px 0 rgba(0, 0, 0, 0.48),
-      0 0 0 2px rgba(255, 43, 166, 0.55);
+      0 0 0 2px rgba(0, 0, 0, 0.72);
   }
 }
 
 @keyframes hub-pulse {
   50% {
     box-shadow:
-      0 0 0 4px rgba(255, 43, 166, 0.65),
-      0 0 19px rgba(217, 255, 0, 0.42);
+      0 0 0 4px rgba(0, 0, 0, 0.72),
+      0 0 0 7px rgba(255, 255, 0, 0.34);
   }
 }
 
@@ -1526,9 +1562,9 @@ a:focus-visible {
   padding: 4px 10px 4px 3px;
   border: 2px dashed var(--navy);
   background:
-    repeating-linear-gradient(135deg, rgba(255, 43, 166, 0.08) 0 5px, transparent 5px 10px),
-    #fff7a5;
-  box-shadow: 4px 4px 0 #ff2ba6;
+    repeating-linear-gradient(135deg, rgba(128, 128, 128, 0.16) 0 4px, transparent 4px 8px),
+    #ffff00;
+  box-shadow: 4px 4px 0 #000;
 }
 
 .bonus-divider img:first-child {
@@ -1556,7 +1592,7 @@ a:focus-visible {
 }
 
 .bonus-divider strong {
-  color: #c40074;
+  color: #800080;
   font: bold 11px/1.15 var(--mono);
   letter-spacing: 0.06em;
 }
@@ -1660,7 +1696,7 @@ a:focus-visible {
   padding: 11px 14px;
   border: 2px inset #eee;
   background: #fff;
-  box-shadow: 4px 4px 0 rgba(89, 48, 105, 0.17);
+  box-shadow: 4px 4px 0 #000;
 }
 
 .guestbook-head {
@@ -1700,7 +1736,12 @@ a:focus-visible {
 
 @supports ((background-clip: text) or (-webkit-background-clip: text)) {
   .guestbook-entry blockquote {
-    background: linear-gradient(90deg, #0000a8 0%, #7d2385 45%, #d51319 100%);
+    background: linear-gradient(
+      90deg,
+      #000080 0 34%,
+      #800080 34% 67%,
+      #800000 67% 100%
+    );
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
@@ -1807,7 +1848,7 @@ a:focus-visible {
   padding: 8px 12px;
   border: 3px outset #eee;
   background: var(--navy);
-  box-shadow: 3px 3px 0 #ff2ba6;
+  box-shadow: 3px 3px 0 #000;
   color: #fff !important;
   font-family: var(--system);
   text-align: center;
@@ -1898,7 +1939,7 @@ a:focus-visible {
 
 .micro-ad--anime {
   background:
-    linear-gradient(90deg, transparent 55%, rgba(255, 255, 0, 0.25)),
+    linear-gradient(90deg, transparent 0 55%, rgba(255, 255, 0, 0.25) 55% 100%),
     #da007d;
   animation-delay: -0.9s;
 }
@@ -1929,18 +1970,6 @@ a:focus-visible {
   border: 3px outset #eee;
   background: #c8c8c8;
   box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.2);
-}
-
-.audience-grid::before {
-  content: "COURSE COMPATIBILITY WIZARD 1.0";
-  grid-column: 1 / -1;
-  display: block;
-  padding: 4px 7px;
-  background: var(--navy);
-  color: #fff;
-  font: bold 11px/1.15 var(--system);
-  letter-spacing: 0.02em;
-  text-align: left;
 }
 
 .audience-card {
@@ -2074,7 +2103,15 @@ a:focus-visible {
 }
 
 .faq-section details p {
+  margin-right: 14px;
+  margin-left: 14px;
   font-size: 15px;
+  text-align: left;
+}
+
+.faq-section summary {
+  padding: 8px 14px;
+  text-align: left;
 }
 
 .formats-section {
@@ -2120,8 +2157,8 @@ a:focus-visible {
 .format-choice:focus-visible,
 .format-choice.is-selected {
   border-style: inset;
-  background: #fff;
-  color: var(--blue);
+  background: #dfffe5;
+  color: #004c13;
 }
 
 .formats-table {
@@ -2164,9 +2201,9 @@ a:focus-visible {
 .formats-table[data-selected="group"] td:nth-child(2),
 .formats-table[data-selected="personal"] th:nth-child(3),
 .formats-table[data-selected="personal"] td:nth-child(3) {
-  outline: 2px solid #ff2ba6;
+  outline: 2px solid #16832e;
   outline-offset: -3px;
-  background-color: #fff7c8;
+  background-color: #dfffe5;
 }
 
 .formats-table[data-selected="solo"] th:nth-child(1),
@@ -2194,7 +2231,13 @@ a:focus-visible {
   overflow: hidden;
   padding-right: 190px;
   background:
-    linear-gradient(90deg, rgba(255, 255, 255, 0.98) 0 42%, rgba(255, 255, 255, 0.74) 68%, rgba(255, 255, 255, 0.22) 100%);
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.98) 0 44%,
+      rgba(255, 255, 255, 0.76) 44% 66%,
+      rgba(255, 255, 255, 0.34) 66% 82%,
+      rgba(255, 255, 255, 0) 82% 100%
+    );
   text-align: center;
 }
 
@@ -2234,10 +2277,10 @@ a:focus-visible {
   background:
     radial-gradient(
       ellipse at 42% 50%,
-      rgba(255, 255, 255, 0.96) 0%,
-      rgba(255, 255, 255, 0.88) 44%,
-      rgba(255, 255, 255, 0.52) 68%,
-      rgba(255, 255, 255, 0) 100%
+      rgba(255, 255, 255, 0.96) 0 44%,
+      rgba(255, 255, 255, 0.78) 44% 66%,
+      rgba(255, 255, 255, 0.34) 66% 82%,
+      rgba(255, 255, 255, 0) 82% 100%
     );
 }
 
@@ -2259,7 +2302,7 @@ a:focus-visible {
   min-width: min(250px, calc(100% - 30px));
   padding: 9px 18px;
   background: #fff239;
-  box-shadow: 4px 4px 0 #ff2ba6;
+  box-shadow: 4px 4px 0 #000;
   color: #000 !important;
 }
 
@@ -2283,9 +2326,8 @@ a:focus-visible {
   height: 112px;
   margin-top: -16px;
   overflow: hidden;
-  background:
-    radial-gradient(ellipse at 50% 100%, rgba(111, 168, 50, 0.26) 0 42%, transparent 72%),
-    linear-gradient(180deg, transparent 0 82%, rgba(78, 139, 48, 0.88) 83% 100%);
+  contain: layout paint;
+  background: transparent;
 }
 
 .procedural-grass::before {
@@ -2415,14 +2457,14 @@ a:focus-visible {
     padding: 4px 2px;
   }
 
-  .side-table:not(.side-table--small) th {
-    line-height: 1.9;
+  .side-table:not(.side-table--small) tbody {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .old-section {
     margin-bottom: 38px;
     padding: 13px 12px 22px;
-    box-shadow: 3px 4px 0 rgba(55, 102, 137, 0.17);
+    box-shadow: 3px 4px 0 #000;
   }
 
   .old-section h2 {
@@ -2640,7 +2682,12 @@ a:focus-visible {
     padding-right: 10px;
     padding-bottom: 140px;
     background:
-      linear-gradient(90deg, rgba(255, 255, 255, 0.94), rgba(255, 255, 255, 0.56) 72%, rgba(255, 255, 255, 0.14));
+      linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.94) 0 48%,
+        rgba(255, 255, 255, 0.58) 48% 74%,
+        rgba(255, 255, 255, 0.16) 74% 100%
+      );
   }
 
   .final-section > img:first-of-type {
@@ -2801,7 +2848,8 @@ a:focus-visible {
   .back-top,
   .guestbook-controls,
   .news-ticker,
-  .procedural-grass {
+  .procedural-grass,
+  .film-grain {
     display: none;
   }
 

@@ -248,6 +248,47 @@ formatChoices.forEach((choice) => {
   choice.addEventListener("click", () => selectFormat(choice.dataset.format));
 });
 
+const grainCanvas = document.createElement("canvas");
+const grainContext = grainCanvas.getContext("2d", { alpha: false });
+const grainMotionAllowed = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const grainPixelSize = 6;
+const grainFrameInterval = 90;
+let grainLastDraw = -grainFrameInterval;
+
+grainCanvas.className = "film-grain";
+grainCanvas.setAttribute("aria-hidden", "true");
+document.body.append(grainCanvas);
+
+function sizeGrainCanvas() {
+  grainCanvas.width = Math.max(1, Math.ceil(window.innerWidth / grainPixelSize));
+  grainCanvas.height = Math.max(1, Math.ceil(window.innerHeight / grainPixelSize));
+  grainContext.imageSmoothingEnabled = false;
+  grainLastDraw = -grainFrameInterval;
+}
+
+function paintGrain(now = 0) {
+  if (now - grainLastDraw >= grainFrameInterval) {
+    const frame = grainContext.createImageData(grainCanvas.width, grainCanvas.height);
+
+    for (let index = 0; index < frame.data.length; index += 4) {
+      const tone = 32 + Math.floor(Math.random() * 192);
+      frame.data[index] = tone;
+      frame.data[index + 1] = tone;
+      frame.data[index + 2] = tone;
+      frame.data[index + 3] = 255;
+    }
+
+    grainContext.putImageData(frame, 0, 0);
+    grainLastDraw = now;
+  }
+
+  if (grainMotionAllowed) requestAnimationFrame(paintGrain);
+}
+
+window.addEventListener("resize", sizeGrainCanvas, { passive: true });
+sizeGrainCanvas();
+requestAnimationFrame(paintGrain);
+
 const trailAllowed =
   window.matchMedia("(pointer: fine)").matches &&
   !window.matchMedia("(prefers-reduced-motion: reduce)").matches;

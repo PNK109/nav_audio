@@ -1,3 +1,5 @@
+const isEmbedded = window.parent !== window;
+
 const diagnostics = {
   voice: {
     archetype: "СОБИРАТЕЛЬ",
@@ -198,7 +200,7 @@ function showModule(index) {
   moduleResult.textContent = data.result;
   moduleStage.textContent = `STAGE ${String(index + 1).padStart(2, "0")}`;
   moduleProgress.style.width = `${((index + 1) / modules.length) * 100}%`;
-  moduleIcon.src = `assets/gif/module-${index + 1}.gif`;
+  setManagedGifSource(moduleIcon, `assets/gif/module-${index + 1}.gif`);
   moduleLessons.replaceChildren(
     ...data.lessons.map((lesson) => {
       const item = document.createElement("li");
@@ -248,48 +250,103 @@ formatChoices.forEach((choice) => {
   choice.addEventListener("click", () => selectFormat(choice.dataset.format));
 });
 
-const grainCanvas = document.createElement("canvas");
-const grainContext = grainCanvas.getContext("2d", { alpha: false });
-const grainMotionAllowed = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-const grainPixelSize = 2;
-const grainFrameInterval = 90;
-let grainLastDraw = -grainFrameInterval;
+function initLiveFilmGrain() {
+  if (isEmbedded) return;
 
-grainCanvas.className = "film-grain";
-grainCanvas.setAttribute("aria-hidden", "true");
-document.body.append(grainCanvas);
+  const grainCanvas = document.createElement("canvas");
+  const grainContext = grainCanvas.getContext("2d", {
+    alpha: false,
+    desynchronized: true
+  });
+  const tileCanvas = document.createElement("canvas");
+  const tileContext = tileCanvas.getContext("2d", { alpha: false });
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const lowPower =
+    (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) ||
+    (navigator.connection && navigator.connection.saveData);
+  const tileSize = lowPower ? 80 : 112;
+  const maxPixels = lowPower ? 280000 : 620000;
+  const frameInterval = lowPower ? 125 : 84;
+  let grainTimer = 0;
+  let resizeFrame = 0;
 
-function sizeGrainCanvas() {
-  grainCanvas.width = Math.max(1, Math.ceil(window.innerWidth / grainPixelSize));
-  grainCanvas.height = Math.max(1, Math.ceil(window.innerHeight / grainPixelSize));
-  grainContext.imageSmoothingEnabled = false;
-  grainLastDraw = -grainFrameInterval;
-}
+  grainCanvas.className = "film-grain";
+  grainCanvas.setAttribute("aria-hidden", "true");
+  tileCanvas.width = tileSize;
+  tileCanvas.height = tileSize;
+  document.body.append(grainCanvas);
 
-function paintGrain(now = 0) {
-  if (now - grainLastDraw >= grainFrameInterval) {
-    const frame = grainContext.createImageData(grainCanvas.width, grainCanvas.height);
+  function sizeGrainCanvas() {
+    const width = Math.max(1, window.innerWidth);
+    const height = Math.max(1, window.innerHeight);
+    const scale = Math.min(1, Math.sqrt(maxPixels / (width * height)));
+
+    grainCanvas.width = Math.max(1, Math.ceil(width * scale));
+    grainCanvas.height = Math.max(1, Math.ceil(height * scale));
+    grainContext.imageSmoothingEnabled = false;
+  }
+
+  function drawLivingGrain() {
+    const frame = tileContext.createImageData(tileSize, tileSize);
 
     for (let index = 0; index < frame.data.length; index += 4) {
-      const tone = 56 + Math.floor(Math.random() * 144);
+      const centered =
+        Math.random() + Math.random() + Math.random() + Math.random() - 2;
+      const speck = Math.random();
+      const tone =
+        speck < 0.018 ? 38 :
+        speck > 0.982 ? 222 :
+        Math.max(54, Math.min(202, Math.round(128 + centered * 42)));
+
       frame.data[index] = tone;
       frame.data[index + 1] = tone;
       frame.data[index + 2] = tone;
       frame.data[index + 3] = 255;
     }
 
-    grainContext.putImageData(frame, 0, 0);
-    grainLastDraw = now;
+    tileContext.putImageData(frame, 0, 0);
+    grainContext.fillStyle = grainContext.createPattern(tileCanvas, "repeat");
+    grainContext.fillRect(0, 0, grainCanvas.width, grainCanvas.height);
   }
 
-  if (grainMotionAllowed) requestAnimationFrame(paintGrain);
+  function stopGrain() {
+    window.clearTimeout(grainTimer);
+    grainTimer = 0;
+  }
+
+  function runGrain() {
+    stopGrain();
+    if (document.hidden) return;
+
+    drawLivingGrain();
+    if (!reduceMotion) {
+      grainTimer = window.setTimeout(() => {
+        requestAnimationFrame(runGrain);
+      }, frameInterval);
+    }
+  }
+
+  window.addEventListener("resize", () => {
+    cancelAnimationFrame(resizeFrame);
+    resizeFrame = requestAnimationFrame(() => {
+      sizeGrainCanvas();
+      runGrain();
+    });
+  }, { passive: true });
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) stopGrain();
+    else runGrain();
+  });
+
+  sizeGrainCanvas();
+  runGrain();
 }
 
-window.addEventListener("resize", sizeGrainCanvas, { passive: true });
-sizeGrainCanvas();
-requestAnimationFrame(paintGrain);
+initLiveFilmGrain();
 
 const trailAllowed =
+  !isEmbedded &&
   window.matchMedia("(pointer: fine)").matches &&
   !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -395,6 +452,105 @@ if (trailAllowed) {
   sizeTrailCanvas();
 }
 
+const transparentGif =
+  "data:image/gif;base64,R0lGODlhAQABAAAAACw=";
+const motionRegions = Array.from(
+  document.querySelectorAll(".site-header, .old-section, .site-footer")
+);
+const managedGifs = Array.from(document.querySelectorAll('img[src*=".gif"]'));
+
+motionRegions.forEach((region) => region.classList.add("motion-region"));
+managedGifs.forEach((image) => {
+  image.dataset.liveSrc = image.getAttribute("src");
+  image.decoding = "async";
+});
+
+function regionIsActive(region) {
+  return !region || region.classList.contains("is-near-viewport");
+}
+
+function setManagedGifActive(image, active) {
+  const liveSource = image.dataset.liveSrc;
+  if (!liveSource) return;
+
+  const nextSource = active ? liveSource : transparentGif;
+  if (image.getAttribute("src") !== nextSource) {
+    image.setAttribute("src", nextSource);
+  }
+}
+
+function setManagedGifSource(image, source) {
+  image.dataset.liveSrc = source;
+  setManagedGifActive(image, regionIsActive(image.closest(".motion-region")));
+}
+
+function setMotionRegionActive(region, active) {
+  region.classList.toggle("is-near-viewport", active);
+  region.querySelectorAll('img[data-live-src]').forEach((image) => {
+    setManagedGifActive(image, active);
+  });
+}
+
+function syncEmbeddedMotionViewport(viewport) {
+  const margin = 640;
+  const top = Number(viewport.top) - margin;
+  const bottom = Number(viewport.bottom) + margin;
+  const visible = Boolean(viewport.visible);
+
+  motionRegions.forEach((region) => {
+    const rect = region.getBoundingClientRect();
+    const regionTop = rect.top + window.scrollY;
+    const regionBottom = regionTop + Math.max(rect.height, region.offsetHeight);
+    setMotionRegionActive(
+      region,
+      visible && regionBottom >= top && regionTop <= bottom
+    );
+  });
+}
+
+let pendingEmbedViewport = null;
+let embedMotionTimer = 0;
+
+function scheduleEmbeddedMotionViewport(viewport) {
+  pendingEmbedViewport = viewport;
+  if (embedMotionTimer) return;
+
+  embedMotionTimer = window.setTimeout(() => {
+    embedMotionTimer = 0;
+    syncEmbeddedMotionViewport(pendingEmbedViewport);
+  }, 80);
+}
+
+if (isEmbedded) {
+  syncEmbeddedMotionViewport({
+    top: 0,
+    bottom: Math.min(1000, document.documentElement.scrollHeight),
+    visible: true
+  });
+
+  window.addEventListener("message", (event) => {
+    const data = event.data;
+    if (
+      event.source === window.parent &&
+      data &&
+      data.source === "tilda-kl" &&
+      data.type === "viewport"
+    ) {
+      scheduleEmbeddedMotionViewport(data);
+    }
+  });
+} else if ("IntersectionObserver" in window) {
+  const motionObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      setMotionRegionActive(entry.target, entry.isIntersecting);
+    });
+  }, { rootMargin: "640px 0px" });
+
+  motionRegions.forEach((region) => motionObserver.observe(region));
+} else {
+  motionRegions.forEach((region) => setMotionRegionActive(region, true));
+}
+
 const grass = document.querySelector("#procedural-grass");
 
 function buildGrass() {
@@ -405,7 +561,7 @@ function buildGrass() {
     seed = (seed * 1664525 + 1013904223) >>> 0;
     return seed / 4294967296;
   };
-  const bladeCount = Math.min(220, Math.max(64, Math.ceil(window.innerWidth / 7)));
+  const bladeCount = Math.min(120, Math.max(48, Math.ceil(window.innerWidth / 11)));
   const fragment = document.createDocumentFragment();
   const colors = ["#4f9c35", "#68ad3d", "#3f842f", "#82bd43", "#2f7429"];
 

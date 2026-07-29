@@ -251,7 +251,7 @@ formatChoices.forEach((choice) => {
 const grainCanvas = document.createElement("canvas");
 const grainContext = grainCanvas.getContext("2d", { alpha: false });
 const grainMotionAllowed = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-const grainPixelSize = 6;
+const grainPixelSize = 2;
 const grainFrameInterval = 90;
 let grainLastDraw = -grainFrameInterval;
 
@@ -271,7 +271,7 @@ function paintGrain(now = 0) {
     const frame = grainContext.createImageData(grainCanvas.width, grainCanvas.height);
 
     for (let index = 0; index < frame.data.length; index += 4) {
-      const tone = 32 + Math.floor(Math.random() * 192);
+      const tone = 56 + Math.floor(Math.random() * 144);
       frame.data[index] = tone;
       frame.data[index + 1] = tone;
       frame.data[index + 2] = tone;

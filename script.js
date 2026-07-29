@@ -438,3 +438,78 @@ buildGrass();
 selectFormat("solo");
 showReview(0);
 showModule(0);
+
+/*
+ * Tilda T123 embed bridge.
+ *
+ * The course page is embedded cross-origin, so the parent Tilda page cannot
+ * read its document height directly. Report the real rendered height whenever
+ * content, images, fonts, or the viewport change. This code is inert when the
+ * page is opened normally outside an iframe.
+ */
+if (window.parent !== window) {
+  const embedMessageSource = "pankovskii-kl";
+  let embedResizeFrame = 0;
+  let lastEmbedHeight = 0;
+
+  function measureEmbedHeight() {
+    embedResizeFrame = 0;
+
+    const bodyHeight = document.body
+      ? Math.max(document.body.scrollHeight, document.body.offsetHeight)
+      : 0;
+    const rootHeight = Math.max(
+      document.documentElement.scrollHeight,
+      document.documentElement.offsetHeight
+    );
+    const height = Math.ceil(Math.max(bodyHeight, rootHeight));
+
+    if (height < 1 || Math.abs(height - lastEmbedHeight) < 2) return;
+    lastEmbedHeight = height;
+
+    window.parent.postMessage(
+      {
+        source: embedMessageSource,
+        type: "resize",
+        height
+      },
+      "*"
+    );
+  }
+
+  function scheduleEmbedMeasurement() {
+    cancelAnimationFrame(embedResizeFrame);
+    embedResizeFrame = requestAnimationFrame(measureEmbedHeight);
+  }
+
+  window.addEventListener("load", scheduleEmbedMeasurement);
+  window.addEventListener("resize", scheduleEmbedMeasurement, { passive: true });
+  window.addEventListener("message", (event) => {
+    if (
+      event.data &&
+      event.data.source === "tilda-kl" &&
+      event.data.type === "request-size"
+    ) {
+      scheduleEmbedMeasurement();
+    }
+  });
+
+  if ("ResizeObserver" in window && document.body) {
+    new ResizeObserver(scheduleEmbedMeasurement).observe(document.body);
+  }
+
+  document.querySelectorAll("img").forEach((image) => {
+    if (!image.complete) {
+      image.addEventListener("load", scheduleEmbedMeasurement, { once: true });
+      image.addEventListener("error", scheduleEmbedMeasurement, { once: true });
+    }
+  });
+
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(scheduleEmbedMeasurement);
+  }
+
+  scheduleEmbedMeasurement();
+  window.setTimeout(scheduleEmbedMeasurement, 500);
+  window.setTimeout(scheduleEmbedMeasurement, 1600);
+}

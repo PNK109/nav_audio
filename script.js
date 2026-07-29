@@ -345,8 +345,9 @@ function initLiveFilmGrain() {
 
 initLiveFilmGrain();
 
+let syncEmbeddedTrailViewport = () => {};
+
 const trailAllowed =
-  !isEmbedded &&
   window.matchMedia("(pointer: fine)").matches &&
   !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -356,17 +357,88 @@ if (trailAllowed) {
   const points = [];
   const trailLength = 280;
   const trailLifetime = 680;
+  const maxTrailPixels = isEmbedded ? 1400000 : 2400000;
+  let trailViewportTop = 0;
+  let trailViewportWidth = Math.max(1, window.innerWidth);
+  let trailViewportHeight = isEmbedded
+    ? Math.min(1000, Math.max(480, window.screen.availHeight || 900))
+    : Math.max(1, window.innerHeight);
   let frame = 0;
 
   canvas.className = "cursor-trail";
+  if (isEmbedded) canvas.classList.add("cursor-trail--embedded");
   canvas.setAttribute("aria-hidden", "true");
   document.body.append(canvas);
 
   function sizeTrailCanvas() {
-    const ratio = Math.min(window.devicePixelRatio || 1, 2);
-    canvas.width = Math.round(window.innerWidth * ratio);
-    canvas.height = Math.round(window.innerHeight * ratio);
-    context.setTransform(ratio, 0, 0, ratio, 0, 0);
+    trailViewportWidth = Math.max(1, window.innerWidth);
+    const baseRatio = Math.min(window.devicePixelRatio || 1, isEmbedded ? 1.5 : 2);
+    const pixelRatio = Math.max(
+      0.35,
+      Math.min(
+        baseRatio,
+        Math.sqrt(maxTrailPixels / (trailViewportWidth * trailViewportHeight))
+      )
+    );
+
+    canvas.width = Math.max(1, Math.round(trailViewportWidth * pixelRatio));
+    canvas.height = Math.max(1, Math.round(trailViewportHeight * pixelRatio));
+    canvas.style.width = `${trailViewportWidth}px`;
+    canvas.style.height = `${trailViewportHeight}px`;
+    if (isEmbedded) canvas.style.top = `${trailViewportTop}px`;
+    context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+  }
+
+  function clearTrail() {
+    points.length = 0;
+    context.clearRect(0, 0, trailViewportWidth, trailViewportHeight);
+  }
+
+  function updateEmbeddedTrailViewport(viewport) {
+    if (!isEmbedded) return;
+
+    const visible = Boolean(viewport.visible);
+    canvas.hidden = !visible;
+    if (!visible) {
+      clearTrail();
+      return;
+    }
+
+    const nextTop = Math.max(0, Number(viewport.top) || 0);
+    const nextBottom = Math.max(nextTop + 1, Number(viewport.bottom) || nextTop + 1);
+    const nextHeight = Math.max(1, Math.min(1400, nextBottom - nextTop));
+    const topChanged = nextTop !== trailViewportTop;
+    const needsResize =
+      nextHeight !== trailViewportHeight ||
+      window.innerWidth !== trailViewportWidth;
+
+    trailViewportTop = nextTop;
+    trailViewportHeight = nextHeight;
+    if (topChanged) {
+      clearTrail();
+      canvas.style.top = `${trailViewportTop}px`;
+    }
+    if (needsResize) {
+      clearTrail();
+      sizeTrailCanvas();
+    }
+  }
+
+  function trailPointFromSample(sample, time) {
+    const y = isEmbedded ? sample.clientY - trailViewportTop : sample.clientY;
+    if (y < -40 || y > trailViewportHeight + 40) return;
+
+    points.push({
+      x: sample.clientX,
+      y,
+      time
+    });
+  }
+
+  function resizeTrailCanvas() {
+    if (!isEmbedded) trailViewportHeight = Math.max(1, window.innerHeight);
+    clearTrail();
+    sizeTrailCanvas();
   }
 
   function trimTrail(now) {
@@ -388,7 +460,7 @@ if (trailAllowed) {
   function drawTrail(now) {
     frame = 0;
     trimTrail(now);
-    context.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    context.clearRect(0, 0, trailViewportWidth, trailViewportHeight);
 
     if (points.length > 1) {
       const first = points[0];
@@ -431,25 +503,35 @@ if (trailAllowed) {
   }
 
   window.addEventListener("pointermove", (event) => {
+    if (canvas.hidden) return;
+
     const events = event.getCoalescedEvents ? event.getCoalescedEvents() : [event];
     const now = performance.now();
     events.forEach((sample, index) => {
-      points.push({
-        x: sample.clientX,
-        y: sample.clientY,
-        time: now - (events.length - index - 1)
-      });
+      trailPointFromSample(
+        sample,
+        now - (events.length - index - 1)
+      );
     });
     requestTrailFrame();
   }, { passive: true });
 
-  window.addEventListener("resize", sizeTrailCanvas, { passive: true });
+  window.addEventListener("resize", resizeTrailCanvas, { passive: true });
   document.documentElement.addEventListener("mouseleave", () => {
-    points.length = 0;
-    context.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    clearTrail();
   });
 
-  sizeTrailCanvas();
+  if (isEmbedded) {
+    syncEmbeddedTrailViewport = updateEmbeddedTrailViewport;
+    sizeTrailCanvas();
+    updateEmbeddedTrailViewport({
+      top: 0,
+      bottom: trailViewportHeight,
+      visible: true
+    });
+  } else {
+    sizeTrailCanvas();
+  }
 }
 
 const transparentGif =
@@ -537,6 +619,7 @@ if (isEmbedded) {
       data.type === "viewport"
     ) {
       scheduleEmbeddedMotionViewport(data);
+      syncEmbeddedTrailViewport(data);
     }
   });
 } else if ("IntersectionObserver" in window) {

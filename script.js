@@ -180,6 +180,7 @@ const modulePractice = document.querySelector("#module-practice");
 const moduleResult = document.querySelector("#module-result");
 const moduleStage = document.querySelector("#module-stage");
 const moduleProgress = document.querySelector("#module-progress");
+const moduleIcon = document.querySelector("#module-icon");
 
 function showModule(index) {
   const data = modules[index];
@@ -193,6 +194,7 @@ function showModule(index) {
   moduleResult.textContent = data.result;
   moduleStage.textContent = `STAGE ${String(index + 1).padStart(2, "0")}`;
   moduleProgress.style.width = `${((index + 1) / modules.length) * 100}%`;
+  moduleIcon.src = `assets/gif/module-${index + 1}.gif`;
   moduleLessons.replaceChildren(
     ...data.lessons.map((lesson) => {
       const item = document.createElement("li");

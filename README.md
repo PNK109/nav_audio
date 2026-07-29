@@ -1,4 +1,4 @@
-# Кинематограф личности — GeoCities edition 0.3
+# Кинематограф личности — GeoCities edition 0.4
 
 Самостоятельная статическая сборка страницы курса без React, Next.js, CMS и конструкторов.
 
@@ -62,4 +62,6 @@ python3 scripts/build_single_file.py
 
 В версии 0.3 одинаковые секции заменены самостоятельными режимами: route map, character select, level select, inventory, world map, guestbook, personal home page, system requirements, help desk и player mode select.
 
-Дополнительные анимированные элементы подобраны в [GifCities](https://gifcities.org/) — архиве GIF с сайтов GeoCities от Internet Archive. В интерфейсе используются прямые архивные URL `blob.gifcities.org`; при включённой системной настройке `prefers-reduced-motion` необязательные анимации скрываются.
+Дополнительные анимированные элементы вдохновлены [GifCities](https://gifcities.org/) — архивом GIF с сайтов GeoCities от Internet Archive.
+
+Версия 0.4 унифицирует страницу вокруг визуального языка Windows95.com: основной интерфейс и текст набраны системным Arial/Helvetica, Times New Roman используется только как редкий курсивный акцент, а случайные внешние персонажи заменены собственным комплектом пиктограмм. Между смысловыми блоками добавлены три локальных анимированных баннера 468×60 в стилистике игровых, аниме- и web-ring-сервисов конца 1990-х. Все GIF теперь хранятся внутри проекта.

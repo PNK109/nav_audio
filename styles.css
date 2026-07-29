@@ -13,9 +13,8 @@
   --lavender: #f3eaff;
   --mint: #e8fff3;
   --peach: #fff0dc;
-  --system: Arial, Helvetica, sans-serif;
+  --system: Arial, "Helvetica Neue", Helvetica, sans-serif;
   --serif: "Times New Roman", Times, serif;
-  --mono: "Courier New", Courier, monospace;
 }
 
 * {
@@ -35,8 +34,8 @@ body {
   background-attachment: fixed;
   background-size: 640px 640px;
   font-family: var(--system);
-  font-size: 15px;
-  line-height: 1.42;
+  font-size: 16px;
+  line-height: 1.38;
 }
 
 img {
@@ -94,16 +93,18 @@ a:focus-visible {
 }
 
 .browser-strip {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  min-height: 22px;
-  padding: 4px 10px;
-  border-top: 1px solid #fff;
-  border-bottom: 2px groove #777;
-  background: rgba(222, 222, 222, 0.94);
-  color: #222;
-  font: 10px/1.2 var(--mono);
+  display: block;
+  min-height: 24px;
+  padding: 4px 10px 0;
+  background: transparent;
+  color: #111;
+  font: bold 12px/1.35 var(--system);
+  text-align: center;
+  text-shadow: 1px 1px #fff;
+}
+
+.browser-strip span:last-child {
+  display: none;
 }
 
 .site {
@@ -154,8 +155,8 @@ a:focus-visible {
   gap: 7px;
   margin: 0 0 5px !important;
   color: #222;
-  font: 13px/1.1 var(--mono);
-  letter-spacing: 0.05em;
+  font: 12px/1.1 var(--system);
+  letter-spacing: 0.02em;
 }
 
 .boot-line img {
@@ -167,8 +168,8 @@ a:focus-visible {
 .plain-title h1 {
   margin: 0;
   color: #000;
-  font: bold clamp(38px, 7vw, 55px)/0.98 var(--system);
-  letter-spacing: -0.045em;
+  font: bold clamp(38px, 7vw, 52px)/1 var(--system);
+  letter-spacing: -0.035em;
   text-shadow: 1px 1px #fff;
 }
 
@@ -239,7 +240,7 @@ a:focus-visible {
   border-bottom: 1px solid #6b6b6b;
   background: rgba(255, 255, 255, 0.82);
   white-space: nowrap;
-  font: bold 11px/20px var(--mono);
+  font: bold 11px/20px var(--system);
 }
 
 .news-ticker span {
@@ -373,24 +374,22 @@ a:focus-visible {
 
 .old-section {
   position: relative;
-  margin: 0 0 46px;
+  margin: 0 0 42px;
   padding: 16px 22px 24px;
-  border: 1px solid rgba(0, 0, 0, 0.36);
-  background: rgba(255, 255, 255, 0.9);
-  box-shadow: 5px 6px 0 rgba(55, 102, 137, 0.18);
+  border: 1px solid rgba(0, 0, 0, 0.48);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: none;
 }
 
 .old-section + .old-section::before {
-  content: "· · ·";
+  content: "";
   display: block;
   position: absolute;
   top: -34px;
   right: 0;
   left: 0;
-  color: #164d89;
-  font: bold 13px/1 var(--system);
-  letter-spacing: 0.65em;
-  text-align: center;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.7);
 }
 
 .old-section h2 {
@@ -421,13 +420,14 @@ a:focus-visible {
 .result-label,
 .route-line,
 .tiny-label {
-  font-family: var(--mono);
+  font-family: var(--system);
 }
 
 .section-path {
   margin: 0 0 8px;
   color: #4e4e4e;
-  font-size: 10px;
+  font-size: 11px;
+  font-weight: bold;
   text-align: center;
 }
 
@@ -435,8 +435,8 @@ a:focus-visible {
   max-width: none !important;
   margin: 4px 0 7px !important;
   color: var(--red);
-  font: bold 10px/1 var(--mono);
-  letter-spacing: 0.14em;
+  font: bold 11px/1 var(--system);
+  letter-spacing: 0.08em;
   text-align: center;
 }
 
@@ -461,7 +461,21 @@ a:focus-visible {
   padding-top: 5px;
   border-top: 1px dotted #777;
   text-align: right;
-  font: 10px/1 var(--mono);
+  font: 11px/1 var(--system);
+}
+
+.ad-break {
+  display: block;
+  width: min(468px, calc(100% - 20px));
+  margin: -13px auto 42px;
+  background: transparent !important;
+}
+
+.ad-break img {
+  display: block;
+  width: 468px;
+  border: 1px solid #111;
+  image-rendering: pixelated;
 }
 
 .route-section {
@@ -475,7 +489,7 @@ a:focus-visible {
 .route-section h2::before {
   content: "ROUTE_01 > ";
   color: var(--red);
-  font: bold 9px/1 var(--mono);
+  font: bold 10px/1 var(--system);
   letter-spacing: 0;
   vertical-align: middle;
 }
@@ -519,7 +533,7 @@ a:focus-visible {
 
 .route-station span {
   color: #555;
-  font: 8px/1 var(--mono);
+  font: 9px/1 var(--system);
 }
 
 .route-station strong {
@@ -580,7 +594,7 @@ a:focus-visible {
 }
 
 .class-select-section {
-  background: rgba(244, 240, 255, 0.94);
+  background: rgba(255, 255, 255, 0.93);
 }
 
 .diagnostic-menu {
@@ -603,21 +617,22 @@ a:focus-visible {
 .diagnostic-option {
   display: flex;
   min-width: 0;
-  min-height: 190px;
-  padding: 6px 5px;
+  min-height: 148px;
+  padding: 9px 6px 8px;
   border: 2px outset #eee;
   background: #e8e8e8;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-end;
-  gap: 7px;
+  justify-content: flex-start;
+  gap: 6px;
   text-align: center;
 }
 
 .diagnostic-option img {
-  width: 94px;
-  height: 96px;
+  width: 56px;
+  height: 56px;
   object-fit: contain;
+  image-rendering: pixelated;
 }
 
 .diagnostic-option span,
@@ -628,13 +643,13 @@ a:focus-visible {
 
 .diagnostic-option b {
   color: var(--blue);
-  font-size: 10px;
+  font-size: 11px;
   text-decoration: underline;
 }
 
 .diagnostic-option small {
   margin-top: 5px;
-  font: 9px/1.23 var(--system);
+  font: 10px/1.22 var(--system);
 }
 
 .diagnostic-option:hover,
@@ -691,7 +706,7 @@ a:focus-visible {
   border: 1px solid #777;
   background: #f0f0f0;
   color: #111;
-  font: 9px/1 var(--mono);
+  font: 10px/1 var(--system);
 }
 
 .level-meter {
@@ -729,10 +744,12 @@ a:focus-visible {
 }
 
 .module-tab {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   width: 100%;
-  min-height: 42px;
-  padding: 7px 8px;
+  min-height: 58px;
+  padding: 5px 8px;
   border: 0;
   background: transparent;
   font: bold 11px/1.25 var(--system);
@@ -741,7 +758,22 @@ a:focus-visible {
 }
 
 .module-tab::before {
-  content: "○ ";
+  content: none;
+}
+
+.module-tab img {
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.module-tab span {
+  display: block;
+}
+
+.module-tab b {
   color: #555;
 }
 
@@ -753,8 +785,7 @@ a:focus-visible {
   text-decoration: none;
 }
 
-.module-tab.is-active::before {
-  content: "● ";
+.module-tab.is-active b {
   color: #fff;
 }
 
@@ -773,6 +804,7 @@ a:focus-visible {
   width: 56px;
   height: 56px;
   object-fit: contain;
+  image-rendering: pixelated;
 }
 
 .module-meta {
@@ -816,7 +848,7 @@ a:focus-visible {
 }
 
 .inventory-section {
-  background: rgba(232, 255, 243, 0.94);
+  background: rgba(255, 255, 255, 0.93);
 }
 
 .inventory-toolbar {
@@ -828,7 +860,7 @@ a:focus-visible {
   padding: 4px 8px;
   border: 2px inset #eee;
   background: #ddd;
-  font: bold 9px/1 var(--mono);
+  font: bold 10px/1 var(--system);
 }
 
 .inventory-toolbar img {
@@ -863,9 +895,7 @@ a:focus-visible {
 }
 
 .ecosystem-section {
-  background-color: rgba(232, 247, 255, 0.94);
-  background-image: radial-gradient(#7cadd0 0.7px, transparent 0.7px);
-  background-size: 12px 12px;
+  background: rgba(255, 255, 255, 0.93);
 }
 
 .ecosystem-map {
@@ -879,7 +909,7 @@ a:focus-visible {
   padding: 9px;
   border: 2px ridge #eee;
   background: rgba(255, 255, 255, 0.94);
-  font-family: var(--mono);
+  font-family: var(--system);
 }
 
 .map-node {
@@ -933,6 +963,7 @@ a:focus-visible {
   height: 112px;
   margin: auto;
   object-fit: contain;
+  image-rendering: pixelated;
 }
 
 .wide-picture {
@@ -1022,7 +1053,7 @@ a:focus-visible {
 }
 
 .tag-line {
-  font: 10px/1.45 var(--mono);
+  font: 11px/1.45 var(--system);
 }
 
 .total-line {
@@ -1030,12 +1061,12 @@ a:focus-visible {
   padding: 6px;
   background: #fff;
   color: #000;
-  font-family: var(--mono);
+  font-family: var(--system);
   text-align: center;
 }
 
 .guestbook {
-  background: rgba(246, 237, 255, 0.94);
+  background: rgba(255, 255, 255, 0.93);
 }
 
 .guestbook-entry {
@@ -1048,7 +1079,7 @@ a:focus-visible {
 .guestbook-meta {
   margin-top: 0;
   color: #555;
-  font: 10px/1.5 var(--mono);
+  font: 11px/1.5 var(--system);
 }
 
 .guestbook-entry blockquote {
@@ -1056,13 +1087,13 @@ a:focus-visible {
   margin: 12px 7px 5px;
   padding-left: 14px;
   border-left: 3px double #7d2385;
-  font: 15px/1.5 var(--serif);
+  font: italic 15px/1.5 var(--system);
 }
 
 .guestbook-controls {
   max-width: none !important;
   text-align: center;
-  font-family: var(--mono);
+  font-family: var(--system);
 }
 
 .guestbook-controls button {
@@ -1073,7 +1104,7 @@ a:focus-visible {
 }
 
 .profile-section {
-  background: rgba(255, 248, 184, 0.94);
+  background: rgba(255, 255, 255, 0.93);
 }
 
 .author-section > img {
@@ -1105,13 +1136,13 @@ a:focus-visible {
   padding: 6px 9px;
   border: 1px dashed #555;
   background: #fff;
-  font: 10px/1.35 var(--mono);
+  font: 11px/1.35 var(--system);
 }
 
 .author-status img {
   flex: 0 0 72px;
   width: 72px;
-  height: 76px;
+  height: 54px;
   object-fit: contain;
 }
 
@@ -1165,7 +1196,7 @@ a:focus-visible {
   display: block;
   margin-top: 16px;
   color: #555;
-  font: 9px/1 var(--mono);
+  font: 10px/1 var(--system);
   text-align: center;
 }
 
@@ -1174,14 +1205,14 @@ a:focus-visible {
 }
 
 .formats-section {
-  background: rgba(232, 247, 255, 0.96);
+  background: rgba(255, 255, 255, 0.94);
 }
 
 .notice {
   padding: 6px;
   border: 1px dashed #777;
   background: var(--yellow);
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .format-selector {
@@ -1295,7 +1326,7 @@ a:focus-visible {
   border-top: 1px solid #fff;
   background: rgba(255, 255, 255, 0.68);
   color: #333;
-  font: 9px/1.45 var(--mono);
+  font: italic 10px/1.45 var(--serif);
   text-align: center;
 }
 
@@ -1304,13 +1335,9 @@ a:focus-visible {
   font-weight: bold;
 }
 
-.gifcity-motion {
-  image-rendering: auto;
-}
-
 @media (max-width: 680px) {
   body {
-    font-size: 15px;
+    font-size: 16px;
     background-attachment: scroll;
     background-size: 520px 520px;
   }
@@ -1414,7 +1441,7 @@ a:focus-visible {
   }
 
   .diagnostic-option {
-    min-height: 174px;
+    min-height: 142px;
   }
 
   .level-status {
@@ -1581,9 +1608,9 @@ a:focus-visible {
   }
 
   .diagnostic-option img {
-    flex: 0 0 76px;
-    width: 76px;
-    height: 70px;
+    flex: 0 0 52px;
+    width: 52px;
+    height: 52px;
   }
 
   .ecosystem-map {
@@ -1603,10 +1630,6 @@ a:focus-visible {
   .news-ticker span {
     padding-left: 0;
     animation: none;
-  }
-
-  .gifcity-motion {
-    display: none !important;
   }
 
   .route-visual,

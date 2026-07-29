@@ -1764,7 +1764,7 @@ a:focus-visible {
 .author-log p {
   display: block;
   margin: 0;
-  padding: 9px;
+  padding: 6px 9px;
   border-bottom: 1px dotted #777;
   font-size: 12px;
   line-height: 1.27;
@@ -2252,6 +2252,7 @@ a:focus-visible {
   align-items: center;
   justify-content: center;
   margin: 18px auto 0;
+  transform: translateX(-11px);
 }
 
 .final-action .image-button {
@@ -2656,6 +2657,7 @@ a:focus-visible {
 
   .final-action {
     width: 100%;
+    transform: none;
   }
 }
 

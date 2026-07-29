@@ -40,8 +40,18 @@
         <img src="assets/gif/kl-banner.gif" alt="Кинематограф личности — 6 модулей, один авторский проект" width="468" height="60">
       </a>
 
-      <div class="title-banner">
-        <img src="assets/course-cover.jpg" alt="Обложка курса «Кинематограф личности»" width="760" height="428">
+      <div class="disc-stage" role="img" aria-label="Вращающийся CD-ROM с обложкой курса «Кинематограф личности»">
+        <div class="course-disc" aria-hidden="true">
+          <div class="course-disc__edge"></div>
+          <div class="course-disc__face">
+            <span class="course-disc__shine"></span>
+            <span class="course-disc__hub"></span>
+          </div>
+        </div>
+        <p class="disc-caption">
+          <img src="assets/gif/disc.gif" alt="" width="24" height="24">
+          KL_BOOT_DISC.ISO :: AUTO PLAY
+        </p>
       </div>
 
       <p class="lead">
@@ -327,19 +337,38 @@
           <p class="mode-kicker">WORLD MAP / CONNECTED FILES</p>
           <h2>ЯДРО КУРСА И ЭКОСИСТЕМА</h2>
 
-          <div class="ecosystem-map" role="img" aria-label="Карта экосистемы курса">
+          <div class="ecosystem-map" role="img" aria-label="Анимированная карта экосистемы курса на фоне рабочего стола">
+            <img class="ecosystem-backdrop" src="assets/ecosystem-topshot.webp" alt="" width="640" height="360" loading="lazy">
+            <div class="ecosystem-screen" aria-hidden="true"></div>
+            <svg class="ecosystem-wires" viewBox="0 0 640 360" preserveAspectRatio="none" aria-hidden="true">
+              <path d="M320 180 C255 116 205 92 126 80"></path>
+              <path d="M320 180 C388 112 444 88 530 82"></path>
+              <path d="M320 180 C252 240 202 267 118 286"></path>
+              <path d="M320 180 C386 238 443 267 531 286"></path>
+              <path d="M320 180 C319 229 319 270 320 323"></path>
+              <circle r="5">
+                <animateMotion dur="3.2s" repeatCount="indefinite" path="M320 180 C255 116 205 92 126 80"></animateMotion>
+              </circle>
+              <circle r="5">
+                <animateMotion dur="4.1s" begin="-1.6s" repeatCount="indefinite" path="M320 180 C388 112 444 88 530 82"></animateMotion>
+              </circle>
+              <circle r="5">
+                <animateMotion dur="3.7s" begin="-0.8s" repeatCount="indefinite" path="M320 180 C252 240 202 267 118 286"></animateMotion>
+              </circle>
+              <circle r="5">
+                <animateMotion dur="4.4s" begin="-2.2s" repeatCount="indefinite" path="M320 180 C386 238 443 267 531 286"></animateMotion>
+              </circle>
+            </svg>
             <div class="map-node map-node--course"><b>КУРС</b><span>19 уроков</span></div>
-            <div class="map-connector">················</div>
-            <div class="map-node"><b>НАВЬ.КРУГ</b><span>55 видео</span></div>
-            <div class="map-connector map-connector--vertical">:</div>
-            <img class="map-computer" src="assets/gif/network.gif" alt="" width="128" height="96" loading="lazy">
-            <div class="map-connector map-connector--vertical">:</div>
-            <div class="map-node"><b>АРХИВ</b><span>47 часов</span></div>
-            <div class="map-connector">················</div>
-            <div class="map-node"><b>ПРАКТИКА</b><span>один проект</span></div>
+            <div class="map-node map-node--circle"><b>НАВЬ.КРУГ</b><span>55 видео · 28 часов</span></div>
+            <div class="map-node map-node--archive"><b>АРХИВ</b><span>47 часов</span></div>
+            <div class="map-node map-node--practice"><b>ПРАКТИКА</b><span>один проект</span></div>
+            <div class="map-node map-node--system"><b>РАБОЧАЯ СИСТЕМА</b><span>дневник · базы · автоматизации</span></div>
+            <div class="map-hub">
+              <img class="map-computer" src="assets/gif/network.gif" alt="" width="128" height="96" loading="lazy">
+              <span>CONNECTED</span>
+            </div>
           </div>
-
-          <img class="wide-picture" src="assets/ecosystem-topshot.webp" alt="Материалы творческой экосистемы НАВЬ" width="640" height="360">
 
           <table class="ecosystem-table">
             <caption>ПРИНЦИП ЭКОСИСТЕМЫ</caption>
@@ -427,6 +456,21 @@
           </p>
           <p class="back-top"><a href="#top">^ наверх</a></p>
         </section>
+
+        <aside class="micro-ad-cluster" aria-label="Ретро-баннеры разделов">
+          <a class="micro-ad micro-ad--game" href="#program">
+            <img src="assets/gif/disc.gif" alt="" width="36" height="36" loading="lazy">
+            <span><b>DEMO DISC 109</b><small>6 NEW LEVELS · PLAY NOW!</small></span>
+          </a>
+          <a class="micro-ad micro-ad--anime" href="#ecosystem">
+            <img src="assets/gif/spark.gif" alt="" width="24" height="24" loading="lazy">
+            <span><b>TOKYO ANIME WEB RING</b><small>24H VIDEO TRANSMISSION</small></span>
+          </a>
+          <a class="micro-ad micro-ad--web" href="#next-step">
+            <img src="assets/gif/network.gif" alt="" width="48" height="36" loading="lazy">
+            <span><b>PERSONAL HOMEPAGE KIT</b><small>CONNECT · CREATE · PUBLISH</small></span>
+          </a>
+        </aside>
 
         <section class="old-section compatibility-section" id="audience">
           <p class="section-path">07 / USER_COMPATIBILITY.CHK</p>

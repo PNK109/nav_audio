@@ -1,0 +1,225 @@
+const diagnostics = {
+  voice: {
+    archetype: "СОБИРАТЕЛЬ",
+    title: "Нужна не новая техника, а точка сборки",
+    text: "Соберём опыт, влияния и темы в авторскую позицию, из которой может родиться собственный проект.",
+    route: "позиция → история → форма"
+  },
+  form: {
+    archetype: "АРХИТЕКТОР",
+    title: "Смысл уже есть — ему нужна конструкция",
+    text: "Личный конфликт станет ясной структурой, посильным форматом и визуальной библией проекта.",
+    route: "история → язык → тесты"
+  },
+  release: {
+    archetype: "ПРОВОДНИК",
+    title: "Продвижение начинается до публикации",
+    text: "Соберём публичный пакет проекта и определим, кому, где и как его показывать.",
+    route: "упаковка → публикация → связи"
+  },
+  system: {
+    archetype: "ХРАНИТЕЛЬ",
+    title: "Нужна система, которая переживёт вдохновение",
+    text: "Один главный проект, правила фокуса и траектория на 90 дней заменят бесконечное распыление.",
+    route: "фокус → завершение → продолжение"
+  }
+};
+
+const modules = [
+  {
+    title: "Авторская позиция",
+    subtitle: "Найти внутреннюю опору и сделать свой взгляд понятным другим.",
+    count: "4 урока + ДЗ",
+    duration: "2:43:27",
+    lessons: [
+      "Творчество как опора — части 1 и 2",
+      "Живое мышление в эпоху алгоритмов и ИИ",
+      "Самопрезентация и новая модель личного бренда"
+    ],
+    practice: "Авторское досье: кто говорит?",
+    result: "Темы, опыт, источники, визуальные ориентиры и рабочая самопрезентация."
+  },
+  {
+    title: "История и замысел",
+    subtitle: "Превратить личный материал в историю и подготовить проект.",
+    count: "3 урока + ДЗ",
+    duration: "2:35:51",
+    lessons: [
+      "Сторителлинг: личный опыт в истории",
+      "Форма подачи, личный бренд и визуальный стиль",
+      "Препродакшн: от идеи к визуальному воплощению"
+    ],
+    practice: "Тема, форма и визуальный замысел",
+    result: "Тема, конфликт, формат, сценарный план или тритмент и пакет подготовки."
+  },
+  {
+    title: "Визуальный язык",
+    subtitle: "Выражать эмоцию и смысл через кадр, а не набор приёмов.",
+    count: "3 урока + ДЗ",
+    duration: "3:07:39",
+    lessons: [
+      "Композиция, свет и оптика как язык эмоций",
+      "Движение камеры и драматургия кадра",
+      "Поиск собственного визуального стиля"
+    ],
+    practice: "Операторский тест и визуальные правила",
+    result: "Визуальная библия, снятые тесты и понятный язык проекта."
+  },
+  {
+    title: "Аудитория и ценность",
+    subtitle: "Вывести работу во внешнее поле и построить живые связи.",
+    count: "3 урока + ДЗ",
+    duration: "2:03:28",
+    lessons: [
+      "Нетворкинг и создание сообщества",
+      "Продвижение в цифровой среде",
+      "Опыт как ценность, продукт и возможность"
+    ],
+    practice: "Первый контакт с аудиторией",
+    result: "Карта сообщества, авторская экосистема и первый внешний контакт."
+  },
+  {
+    title: "Устойчивый путь",
+    subtitle: "Встроить творчество в реальную жизнь и выбрать посильный масштаб.",
+    count: "3 урока + ДЗ",
+    duration: "1:56:07",
+    lessons: [
+      "Кризисы и поиск новой опоры",
+      "Поток, фокус и глубокая работа",
+      "Востребованность и творческий путь вдолгую"
+    ],
+    practice: "Мой следующий реальный шаг",
+    result: "Аудит ресурсов, система фокуса и траектория на следующие 90 дней."
+  },
+  {
+    title: "Монтаж и выпуск",
+    subtitle: "Превратить материал в законченное авторское высказывание.",
+    count: "3 урока",
+    duration: "3:01:06",
+    lessons: [
+      "Монтажное мышление: ритм, эмоция и структура",
+      "Менеджмент материала и своего продакшна",
+      "Дизайн, цвет, звук и финализация"
+    ],
+    practice: "Сборка и финализация проекта",
+    result: "Монтажная структура, порядок в материале и презентабельная версия проекта."
+  }
+];
+
+const reviews = [
+  {
+    name: "Владислав",
+    date: "19.06.2026",
+    text: "На самом деле большой тебе респект за такой подход к просмотру ДЗ: очень удобно смотреть видео и чувствуется заинтересованность. Рекомендации дельные, при этом не перегруженные формальностями."
+  },
+  {
+    name: "Владислав",
+    date: "03.07.2026",
+    text: "Меня зацепила тема false color и цветовых контрастов — вещи, о которых я не задумывался. Четвёртая глава дала общее понимание, куда стоит направить вектор развития в будущем."
+  },
+  {
+    name: "Владислав",
+    date: "03.07.2026",
+    text: "Домашки — восторг. Особенно по четвёртому блоку. Подробное описание к посту сильно облегчило его написание, а само написание помогло разобраться в собственной идее."
+  },
+  {
+    name: "Vyacheslav Chuprow",
+    date: "02.07.2026",
+    text: "К концу четвёртого блока я понял, что не зря тут. Эти маленькие крупицы информации, которые беру от тебя, действительно дают мне рост как специалисту."
+  },
+  {
+    name: "Anton Emelin",
+    date: "02.06.2026",
+    text: "Только дописал домашку. Думал, что быстренько на все вопросы отвечу, а по итогу потратил часа четыре. Сильные вопросы."
+  },
+  {
+    name: "Anton Emelin",
+    date: "05.06.2026",
+    text: "Формат прямого диалога с большим количеством ссылок на личный опыт помогает на живом примере переложить историю на себя. Становится ясно, что человек знает, о чём говорит, и может это доносить."
+  },
+  {
+    name: "Участница первого потока",
+    date: "08.06.2026",
+    text: "Ощущение, что это не обучение в менторском стиле, а доверительный разговор с другом, который вдохновляет на трансформацию и помогает увидеть себя яснее. Самым сильным оказалось ДЗ."
+  },
+  {
+    name: "Егор Андреевич",
+    date: "15.07.2026",
+    text: "От души за обратную связь и такое включение. Я уже тонны курсов успел пройти, но такое включение вижу впервые."
+  }
+];
+
+const diagnosticButtons = document.querySelectorAll(".diagnostic-option");
+const diagnosticArchetype = document.querySelector("#diagnostic-archetype");
+const diagnosticTitle = document.querySelector("#diagnostic-title");
+const diagnosticText = document.querySelector("#diagnostic-text");
+const diagnosticRoute = document.querySelector("#diagnostic-route");
+
+diagnosticButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    const data = diagnostics[button.dataset.diagnostic];
+    diagnosticButtons.forEach((item) => {
+      item.classList.toggle("is-active", item === button);
+      item.setAttribute("aria-selected", item === button ? "true" : "false");
+    });
+    diagnosticArchetype.textContent = data.archetype;
+    diagnosticTitle.textContent = data.title;
+    diagnosticText.textContent = data.text;
+    diagnosticRoute.textContent = data.route;
+  });
+});
+
+const moduleTabs = document.querySelectorAll(".module-tab");
+const moduleNumber = document.querySelector("#module-number");
+const moduleCount = document.querySelector("#module-count");
+const moduleDuration = document.querySelector("#module-duration");
+const moduleTitle = document.querySelector("#module-title");
+const moduleSubtitle = document.querySelector("#module-subtitle");
+const moduleLessons = document.querySelector("#module-lessons");
+const modulePractice = document.querySelector("#module-practice");
+const moduleResult = document.querySelector("#module-result");
+
+function showModule(index) {
+  const data = modules[index];
+  moduleTabs.forEach((tab) => tab.classList.toggle("is-active", Number(tab.dataset.module) === index));
+  moduleNumber.textContent = String(index + 1).padStart(2, "0");
+  moduleCount.textContent = data.count;
+  moduleDuration.textContent = data.duration;
+  moduleTitle.textContent = data.title;
+  moduleSubtitle.textContent = data.subtitle;
+  modulePractice.textContent = data.practice;
+  moduleResult.textContent = data.result;
+  moduleLessons.replaceChildren(
+    ...data.lessons.map((lesson) => {
+      const item = document.createElement("li");
+      item.textContent = lesson;
+      return item;
+    })
+  );
+}
+
+moduleTabs.forEach((tab) => {
+  tab.addEventListener("click", () => showModule(Number(tab.dataset.module)));
+});
+
+let currentReview = 0;
+const reviewNumber = document.querySelector("#review-number");
+const reviewTotal = document.querySelector("#review-total");
+const reviewName = document.querySelector("#review-name");
+const reviewDate = document.querySelector("#review-date");
+const reviewText = document.querySelector("#review-text");
+
+function showReview(index) {
+  currentReview = (index + reviews.length) % reviews.length;
+  const data = reviews[currentReview];
+  reviewNumber.textContent = String(currentReview + 1).padStart(2, "0");
+  reviewTotal.textContent = String(reviews.length).padStart(2, "0");
+  reviewName.textContent = data.name;
+  reviewDate.textContent = data.date;
+  reviewText.textContent = data.text;
+}
+
+document.querySelector("#review-prev").addEventListener("click", () => showReview(currentReview - 1));
+document.querySelector("#review-next").addEventListener("click", () => showReview(currentReview + 1));
+
+showReview(0);

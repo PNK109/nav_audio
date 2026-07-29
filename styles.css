@@ -1762,10 +1762,9 @@ a:focus-visible {
 }
 
 .author-log p {
-  display: grid;
-  align-content: center;
+  display: block;
   margin: 0;
-  padding: 7px 9px;
+  padding: 9px;
   border-bottom: 1px dotted #777;
   font-size: 12px;
   line-height: 1.27;
@@ -2207,7 +2206,7 @@ a:focus-visible {
 .final-section > img:first-of-type {
   position: absolute;
   z-index: 0;
-  right: -150px;
+  right: -170px;
   bottom: 0;
   width: 650px;
   max-width: none;
@@ -2249,6 +2248,7 @@ a:focus-visible {
 .final-action {
   display: flex;
   width: calc(100% + 190px);
+  max-width: none !important;
   align-items: center;
   justify-content: center;
   margin: 18px auto 0;

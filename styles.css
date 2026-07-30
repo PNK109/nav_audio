@@ -125,16 +125,64 @@ a:focus-visible {
   pointer-events: none;
 }
 
-.film-grain {
+.film-grain,
+.film-bloom {
   position: fixed;
-  z-index: 9998;
   inset: 0;
   width: 100vw;
   height: 100vh;
-  opacity: 0.11;
-  mix-blend-mode: soft-light;
-  image-rendering: pixelated;
   pointer-events: none;
+  transform: translateZ(0);
+}
+
+.film-grain {
+  z-index: 2147483647;
+  opacity: 0.145;
+  mix-blend-mode: overlay;
+  image-rendering: pixelated;
+  contain: strict;
+  will-change: contents, top;
+}
+
+.film-bloom {
+  z-index: 2147483646;
+  opacity: 0.52;
+  background:
+    radial-gradient(ellipse at 50% 16%, rgba(255, 255, 255, 0.2), rgba(193, 229, 255, 0.075) 34%, transparent 68%),
+    radial-gradient(ellipse at 18% 58%, rgba(255, 255, 255, 0.07), transparent 48%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(163, 215, 255, 0.035));
+  mix-blend-mode: screen;
+  -webkit-backdrop-filter: blur(0.45px) saturate(1.07) brightness(1.025);
+  backdrop-filter: blur(0.45px) saturate(1.07) brightness(1.025);
+  contain: strict;
+  will-change: top;
+}
+
+html.is-embedded .film-grain,
+html.is-embedded .film-bloom {
+  position: absolute;
+  inset: auto 0 auto 0;
+}
+
+.plain-title h1,
+.lead,
+.old-section h2,
+.old-section h3 {
+  text-shadow:
+    1px 1px 0 rgba(255, 255, 255, 0.82),
+    0 0 5px rgba(255, 255, 255, 0.24),
+    0 0 16px rgba(176, 222, 255, 0.12);
+}
+
+.welcome-line,
+.plain-title > p:last-child,
+.lead-line,
+.news-ticker,
+.stats-table,
+.old-section {
+  filter:
+    drop-shadow(0 0 4px rgba(255, 255, 255, 0.2))
+    drop-shadow(0 0 15px rgba(167, 217, 255, 0.085));
 }
 
 .browser-strip {
@@ -2406,6 +2454,11 @@ a:focus-visible {
     margin-top: 8px;
   }
 
+  html.is-embedded .site {
+    margin-top: 0;
+    padding-top: clamp(56px, 14vw, 72px);
+  }
+
   .site-header,
   .content,
   .site-footer,
@@ -2864,9 +2917,26 @@ html.is-embedded .reward-item > span:first-child {
   background-attachment: scroll, scroll, scroll;
 }
 
-@media (max-width: 680px), (prefers-reduced-motion: reduce) {
+@media (max-width: 680px) {
   .film-grain {
-    opacity: 0.085;
+    opacity: 0.15;
+    mix-blend-mode: overlay;
+  }
+
+  .film-bloom {
+    opacity: 0.58;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .film-grain {
+    opacity: 0.11;
+  }
+
+  .film-bloom {
+    opacity: 0.42;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
   }
 }
 
@@ -2877,7 +2947,8 @@ html.is-embedded .reward-item > span:first-child {
   .guestbook-controls,
   .news-ticker,
   .procedural-grass,
-  .film-grain {
+  .film-grain,
+  .film-bloom {
     display: none;
   }
 

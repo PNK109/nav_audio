@@ -571,21 +571,45 @@ if (trailAllowed) {
   }
 }
 
+const transparentGif =
+  "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
 const motionRegions = Array.from(
   document.querySelectorAll(".site-header, .old-section, .era-strip, .site-footer")
 );
+const managedGifs = Array.from(
+  document.querySelectorAll('img[src*=".gif"]:not([data-always-live])')
+);
 
 motionRegions.forEach((region) => region.classList.add("motion-region"));
-document.querySelectorAll('img[src*=".gif"]').forEach((image) => {
+managedGifs.forEach((image) => {
+  image.dataset.liveSrc = image.getAttribute("src");
   image.decoding = "async";
 });
 
+function regionIsActive(region) {
+  return !region || region.classList.contains("is-near-viewport");
+}
+
+function setManagedGifActive(image, active) {
+  const liveSource = image.dataset.liveSrc;
+  if (!liveSource) return;
+
+  const nextSource = active ? liveSource : transparentGif;
+  if (image.getAttribute("src") !== nextSource) {
+    image.setAttribute("src", nextSource);
+  }
+}
+
 function setManagedGifSource(image, source) {
-  image.setAttribute("src", source);
+  image.dataset.liveSrc = source;
+  setManagedGifActive(image, regionIsActive(image.closest(".motion-region")));
 }
 
 function setMotionRegionActive(region, active) {
   region.classList.toggle("is-near-viewport", active);
+  region.querySelectorAll('img[data-live-src]').forEach((image) => {
+    setManagedGifActive(image, active);
+  });
 }
 
 function syncEmbeddedMotionViewport(viewport) {

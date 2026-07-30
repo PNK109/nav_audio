@@ -87,10 +87,10 @@
   function makeNoiseTile() {
     var size = 112;
     var canvas = document.createElement('canvas');
-    var context = canvas.getContext('2d', {alpha:false});
-    var image = context.createImageData(size, size);
     canvas.width = size;
     canvas.height = size;
+    var context = canvas.getContext('2d', {alpha:false});
+    var image = context.createImageData(size, size);
 
     for (var index = 0; index < image.data.length; index += 4) {
       var centered =
@@ -131,6 +131,8 @@
     var padding = Math.ceil(radius * 5);
     var size = padding * 2 + 2;
     var canvas = document.createElement('canvas');
+    canvas.width = size;
+    canvas.height = size;
     var context = canvas.getContext('2d');
     var center = size / 2;
     var gradient = context.createRadialGradient(
@@ -142,8 +144,6 @@
       Math.max(2, radius * 4.2)
     );
 
-    canvas.width = size;
-    canvas.height = size;
     gradient.addColorStop(0, 'rgba(255,252,242,.96)');
     gradient.addColorStop(0.18, 'rgba(255,250,236,.78)');
     gradient.addColorStop(0.52, 'rgba(255,247,228,.18)');

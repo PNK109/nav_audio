@@ -694,6 +694,10 @@ if (window.parent !== window) {
   function measureEmbedHeight() {
     embedResizeFrame = 0;
 
+    const endMarker = document.querySelector("#procedural-grass");
+    const contentBottom = endMarker
+      ? Math.ceil(endMarker.getBoundingClientRect().bottom + window.scrollY)
+      : 0;
     const bodyHeight = document.body
       ? Math.max(document.body.scrollHeight, document.body.offsetHeight)
       : 0;
@@ -701,7 +705,13 @@ if (window.parent !== window) {
       document.documentElement.scrollHeight,
       document.documentElement.offsetHeight
     );
-    const height = Math.ceil(Math.max(bodyHeight, rootHeight));
+    /*
+     * The grass is the intentional visual end of the embedded course.
+     * On mobile Safari, viewport-sized technical layers can inflate the
+     * document scrollHeight and leave a visible cloud gap before Tilda's
+     * footer. Prefer the grass edge whenever it exists.
+     */
+    const height = contentBottom || Math.ceil(Math.max(bodyHeight, rootHeight));
 
     if (height < 1 || Math.abs(height - lastEmbedHeight) < 2) return;
     lastEmbedHeight = height;

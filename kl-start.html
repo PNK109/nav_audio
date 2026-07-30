@@ -569,9 +569,12 @@
   <script>
     (() => {
       const reportHeight = () => {
+        const page = document.querySelector(".page");
+        const height = page ? page.offsetHeight + 100 : document.body.scrollHeight;
+
         window.parent.postMessage({
           source: "kl-start",
-          height: Math.ceil(document.documentElement.scrollHeight)
+          height: Math.ceil(height)
         }, "*");
       };
 
@@ -579,7 +582,8 @@
       window.addEventListener("resize", reportHeight);
 
       if ("ResizeObserver" in window) {
-        new ResizeObserver(reportHeight).observe(document.documentElement);
+        const page = document.querySelector(".page");
+        if (page) new ResizeObserver(reportHeight).observe(page);
       }
 
       window.setTimeout(reportHeight, 300);

@@ -325,6 +325,9 @@ function initLiveFilmGrain() {
     tileContext.putImageData(frame, 0, 0);
     grainContext.fillStyle = grainContext.createPattern(tileCanvas, "repeat");
     grainContext.fillRect(0, 0, grainCanvas.width, grainCanvas.height);
+    grainCanvas.dataset.frame = String(
+      (Number(grainCanvas.dataset.frame) || 0) + 1
+    );
   }
 
   function stopGrain() {
@@ -351,7 +354,6 @@ function initLiveFilmGrain() {
     const nextTop = Math.max(0, Number(viewport.top) || 0);
     const nextBottom = Math.max(nextTop + 1, Number(viewport.bottom) || nextTop + 1);
     const nextHeight = Math.max(1, Math.min(1400, nextBottom - nextTop));
-    const topChanged = nextTop !== embeddedViewportTop;
     const sizeChanged =
       nextHeight !== embeddedViewportHeight ||
       window.innerWidth !== Number.parseFloat(grainCanvas.style.width);
@@ -367,10 +369,8 @@ function initLiveFilmGrain() {
 
     embeddedViewportTop = nextTop;
     embeddedViewportHeight = nextHeight;
-    if (topChanged) {
-      grainCanvas.style.top = `${embeddedViewportTop}px`;
-      bloomLayer.style.top = `${embeddedViewportTop}px`;
-    }
+    grainCanvas.style.top = `${embeddedViewportTop}px`;
+    bloomLayer.style.top = `${embeddedViewportTop}px`;
     if (sizeChanged) sizeGrainCanvas();
     runGrain();
   }

@@ -1150,7 +1150,9 @@ a:focus-visible {
 }
 
 .inventory-section {
-  background: rgba(255, 255, 255, 0.93);
+  background: rgba(255, 255, 255, 0.72);
+  -webkit-backdrop-filter: blur(1.4px) saturate(0.96);
+  backdrop-filter: blur(1.4px) saturate(0.96);
 }
 
 .inventory-toolbar {
@@ -1203,7 +1205,7 @@ a:focus-visible {
   margin: 16px 0 7px;
   padding: 5px;
   border: 3px outset #eee;
-  background: #a8a8a8;
+  background: rgba(168, 168, 168, 0.34);
   box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.24);
   list-style: none;
 }
@@ -1219,7 +1221,7 @@ a:focus-visible {
   border: 2px inset #f5f5f5;
   background:
     repeating-linear-gradient(0deg, rgba(0, 0, 128, 0.035) 0 1px, transparent 1px 3px),
-    rgba(245, 245, 239, 0.62);
+    rgba(245, 245, 239, 0.5);
   -webkit-backdrop-filter: blur(1.2px) saturate(0.96);
   backdrop-filter: blur(1.2px) saturate(0.96);
   box-shadow: inset 0 0 0 1px #777;

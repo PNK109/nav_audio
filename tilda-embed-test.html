@@ -1,4 +1,4 @@
-<!-- T123: Кинематограф личности — stable course embed -->
+<!-- T123: Кинематограф личности — performance embed -->
 <div class="kl-t123-embed" id="kl-t123-embed">
   <iframe
     id="kl-course-frame"
@@ -11,13 +11,10 @@
 </div>
 
 <style>
-  #record2497332653,
   .kl-t123-embed {
     width: 100%;
     margin: 0;
-    padding: 0;
     overflow: hidden;
-    overflow-anchor: none;
     contain: paint;
     background: #b9def4;
     line-height: 0;
@@ -29,29 +26,117 @@
     height: 900px;
     margin: 0;
     border: 0;
-    overflow: hidden;
-    overflow-anchor: none;
     background: #b9def4;
+    overflow: hidden;
+  }
+
+  #kl-page-film-grain {
+    position: fixed;
+    z-index: 2147483000;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    opacity: 0.095;
+    mix-blend-mode: soft-light;
+    image-rendering: pixelated;
+    pointer-events: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #kl-page-film-grain {
+      opacity: 0.075;
+    }
   }
 </style>
 
 <script>
 (function () {
-  var duplicateEmbeds = document.querySelectorAll(".kl-t123-embed");
-  for (var i = 1; i < duplicateEmbeds.length; i++) duplicateEmbeds[i].remove();
-
-  if (window.__klCourseEmbedInitialized) return;
-  window.__klCourseEmbedInitialized = true;
-
   var frame = document.getElementById("kl-course-frame");
   if (!frame) return;
 
   var courseOrigin = "https://raw.githack.com";
   var viewportFrame = 0;
-  var heightTimer = 0;
-  var resizeTimer = 0;
-  var pendingHeight = 0;
-  var appliedHeight = 0;
+  var noiseTimer = 0;
+  var noiseResizeFrame = 0;
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var lowPower =
+    (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) ||
+    (navigator.connection && navigator.connection.saveData);
+  var frameInterval = lowPower ? 125 : 84;
+  var maxPixels = lowPower ? 280000 : 620000;
+  var tileSize = lowPower ? 80 : 112;
+
+  var grain = document.createElement("canvas");
+  var grainContext = grain.getContext("2d", {
+    alpha: false,
+    desynchronized: true
+  });
+  var tile = document.createElement("canvas");
+  var tileContext = tile.getContext("2d", { alpha: false });
+
+  grain.id = "kl-page-film-grain";
+  grain.setAttribute("aria-hidden", "true");
+  tile.width = tileSize;
+  tile.height = tileSize;
+  document.body.appendChild(grain);
+
+  function frameIsVisible() {
+    var rect = frame.getBoundingClientRect();
+    return rect.bottom > 0 && rect.top < window.innerHeight;
+  }
+
+  function sizeNoise() {
+    var width = Math.max(1, window.innerWidth);
+    var height = Math.max(1, window.innerHeight);
+    var scale = Math.min(1, Math.sqrt(maxPixels / (width * height)));
+
+    grain.width = Math.max(1, Math.ceil(width * scale));
+    grain.height = Math.max(1, Math.ceil(height * scale));
+    grainContext.imageSmoothingEnabled = false;
+  }
+
+  function drawLivingNoise() {
+    var image = tileContext.createImageData(tileSize, tileSize);
+
+    for (var i = 0; i < image.data.length; i += 4) {
+      var centered =
+        Math.random() + Math.random() + Math.random() + Math.random() - 2;
+      var speck = Math.random();
+      var tone =
+        speck < 0.018 ? 38 :
+        speck > 0.982 ? 222 :
+        Math.max(54, Math.min(202, Math.round(128 + centered * 42)));
+
+      image.data[i] = tone;
+      image.data[i + 1] = tone;
+      image.data[i + 2] = tone;
+      image.data[i + 3] = 255;
+    }
+
+    tileContext.putImageData(image, 0, 0);
+    grainContext.fillStyle = grainContext.createPattern(tile, "repeat");
+    grainContext.fillRect(0, 0, grain.width, grain.height);
+    grain.dataset.frame = String((Number(grain.dataset.frame) || 0) + 1);
+  }
+
+  function stopNoise() {
+    window.clearTimeout(noiseTimer);
+    noiseTimer = 0;
+  }
+
+  function runNoise() {
+    stopNoise();
+    var visible = !document.hidden && frameIsVisible();
+    grain.hidden = !visible;
+    if (!visible) return;
+
+    drawLivingNoise();
+    if (!reduceMotion) {
+      noiseTimer = window.setTimeout(function () {
+        requestAnimationFrame(runNoise);
+      }, frameInterval);
+    }
+  }
 
   function sendViewport() {
     viewportFrame = 0;
@@ -72,6 +157,10 @@
       height: window.innerHeight,
       visible: visible
     }, courseOrigin);
+
+    if (visible && !noiseTimer && !reduceMotion) runNoise();
+    if (!visible) stopNoise();
+    grain.hidden = !visible;
   }
 
   function scheduleViewport() {
@@ -79,48 +168,17 @@
     viewportFrame = requestAnimationFrame(sendViewport);
   }
 
-  function applyStableHeight() {
-    heightTimer = 0;
-    if (Math.abs(pendingHeight - appliedHeight) < 3) return;
-
-    appliedHeight = pendingHeight;
-    frame.style.height = appliedHeight + "px";
-    scheduleViewport();
-  }
-
-  function scheduleHeight(height) {
-    pendingHeight = height;
-    window.clearTimeout(heightTimer);
-    heightTimer = window.setTimeout(applyStableHeight, 70);
-  }
-
-  function scrollToCoursePoint(top) {
-    var frameTop = frame.getBoundingClientRect().top + window.scrollY;
-    var targetTop = Math.max(0, Math.round(frameTop + top - 16));
-    window.scrollTo(0, targetTop);
-    scheduleViewport();
-  }
-
-  function handleCourseMessage(event) {
+  function applyCourseHeight(event) {
     if (event.origin !== courseOrigin || event.source !== frame.contentWindow) return;
 
     var data = event.data;
-    if (!data || data.source !== "pankovskii-kl") return;
+    if (!data || data.source !== "pankovskii-kl" || data.type !== "resize") return;
 
-    if (data.type === "resize") {
-      var height = Math.ceil(Number(data.height));
-      if (Number.isFinite(height) && height >= 600 && height <= 50000) {
-        scheduleHeight(height);
-      }
-      return;
-    }
+    var height = Math.ceil(Number(data.height));
+    if (!Number.isFinite(height) || height < 600 || height > 50000) return;
 
-    if (data.type === "scroll-to") {
-      var top = Number(data.top);
-      if (Number.isFinite(top) && top >= 0 && top <= 50000) {
-        scrollToCoursePoint(top);
-      }
-    }
+    frame.style.height = height + "px";
+    scheduleViewport();
   }
 
   function requestCourseHeight() {
@@ -132,17 +190,30 @@
     scheduleViewport();
   }
 
-  window.addEventListener("message", handleCourseMessage);
+  window.addEventListener("message", applyCourseHeight);
   window.addEventListener("scroll", scheduleViewport, { passive: true });
   window.addEventListener("resize", function () {
-    window.clearTimeout(resizeTimer);
-    resizeTimer = window.setTimeout(requestCourseHeight, 90);
+    cancelAnimationFrame(noiseResizeFrame);
+    noiseResizeFrame = requestAnimationFrame(function () {
+      sizeNoise();
+      runNoise();
+      requestCourseHeight();
+    });
   }, { passive: true });
-  frame.addEventListener("load", requestCourseHeight);
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden) stopNoise();
+    else {
+      runNoise();
+      scheduleViewport();
+    }
+  });
+  frame.addEventListener("load", function () {
+    requestCourseHeight();
+    scheduleViewport();
+  });
 
-  requestCourseHeight();
+  sizeNoise();
+  runNoise();
   scheduleViewport();
-  window.setTimeout(requestCourseHeight, 450);
-  window.setTimeout(requestCourseHeight, 1500);
 })();
 </script>

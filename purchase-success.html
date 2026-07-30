@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#b9def4">
+  <title>Оплата прошла :: НАВЬ</title>
+  <style>
+    :root {
+      --sky: #b9def4;
+      --aqua: #dff5ff;
+      --cream: #fffbea;
+      --yellow: #fff8b8;
+      --mint: #e8fff3;
+      --lavender: #f3eaff;
+      --peach: #fff0dc;
+      --navy: #11185f;
+      --teal: #087f86;
+      --ink: #18213b;
+      --system: "Arial", "Helvetica Neue", sans-serif;
+      --serif: "Georgia", "Times New Roman", serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+    }
+
+    body {
+      color: var(--ink);
+      background:
+        linear-gradient(rgba(185, 222, 244, 0.28), rgba(185, 222, 244, 0.28)),
+        url("assets/sky-tile.jpg") center top / 620px auto repeat,
+        var(--sky);
+      font: 16px/1.58 var(--serif);
+    }
+
+    a {
+      color: var(--navy);
+    }
+
+    .page {
+      width: min(1040px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 56px 0 78px;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      margin: 0 0 13px;
+      padding: 5px 9px;
+      border: 1px solid var(--navy);
+      background: var(--yellow);
+      box-shadow: 3px 3px 0 rgba(17, 24, 95, 0.18);
+      font: bold 11px/1.2 var(--system);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: clamp(28px, 6vw, 62px);
+      border: 2px solid var(--navy);
+      background: rgba(255, 251, 234, 0.94);
+      box-shadow: 9px 10px 0 rgba(17, 24, 95, 0.26);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      right: -65px;
+      top: -80px;
+      border: 2px solid rgba(17, 24, 95, 0.55);
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 42% 38%, rgba(255, 255, 255, 0.92) 0 7%, transparent 8%),
+        radial-gradient(circle, var(--yellow) 0 38%, var(--peach) 39% 57%, var(--aqua) 58% 68%, transparent 69%);
+      opacity: 0.82;
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-family: var(--system);
+    }
+
+    h1 {
+      position: relative;
+      z-index: 1;
+      max-width: 760px;
+      margin: 0;
+      color: var(--navy);
+      font-size: clamp(43px, 8vw, 86px);
+      line-height: 0.92;
+      letter-spacing: -0.055em;
+    }
+
+    .lead {
+      position: relative;
+      z-index: 1;
+      max-width: 690px;
+      margin: 24px 0 0;
+      font-size: clamp(18px, 2.5vw, 24px);
+      line-height: 1.48;
+    }
+
+    .status {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 24px 0 0;
+      font-family: var(--system);
+      font-size: 13px;
+    }
+
+    .status span {
+      padding: 6px 9px;
+      border: 1px solid var(--teal);
+      background: var(--mint);
+    }
+
+    .section {
+      margin-top: 34px;
+      padding: clamp(22px, 4vw, 38px);
+      border: 2px solid var(--navy);
+      background: rgba(255, 251, 234, 0.92);
+      box-shadow: 7px 8px 0 rgba(17, 24, 95, 0.18);
+    }
+
+    .section h2 {
+      margin: 0 0 8px;
+      color: var(--navy);
+      font-size: clamp(25px, 4vw, 38px);
+      line-height: 1.08;
+    }
+
+    .section > p {
+      max-width: 760px;
+      margin: 0;
+    }
+
+    .routes {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 23px;
+    }
+
+    .route {
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
+      padding: 18px;
+      border: 1px solid var(--navy);
+      background: var(--yellow);
+    }
+
+    .route:nth-child(2) {
+      background: var(--mint);
+    }
+
+    .route:nth-child(3) {
+      background: var(--lavender);
+    }
+
+    .route__number {
+      margin: 0 0 9px;
+      color: var(--teal);
+      font: bold 11px/1 var(--system);
+      letter-spacing: 0.1em;
+    }
+
+    .route h3 {
+      margin: 0;
+      color: var(--navy);
+      font-size: 20px;
+      line-height: 1.12;
+    }
+
+    .route p {
+      flex: 1;
+      margin: 12px 0 18px;
+      font-size: 14px;
+      line-height: 1.48;
+    }
+
+    .button {
+      display: block;
+      padding: 11px 12px;
+      border: 2px solid var(--navy);
+      background: #fff;
+      box-shadow: 4px 4px 0 var(--navy);
+      color: var(--navy);
+      font: bold 13px/1.2 var(--system);
+      text-align: center;
+      text-decoration: none;
+      transition: transform 150ms ease, box-shadow 150ms ease, background 150ms ease;
+    }
+
+    .button:hover,
+    .button:focus-visible {
+      background: var(--aqua);
+      box-shadow: 2px 2px 0 var(--navy);
+      transform: translate(2px, 2px);
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin: 22px 0 0;
+      padding: 0;
+      list-style: none;
+      counter-reset: steps;
+    }
+
+    .steps li {
+      min-height: 150px;
+      padding: 16px;
+      border: 1px solid var(--teal);
+      background: rgba(223, 245, 255, 0.88);
+      counter-increment: steps;
+    }
+
+    .steps li::before {
+      content: "0" counter(steps);
+      display: block;
+      margin-bottom: 9px;
+      color: var(--teal);
+      font: bold 12px/1 var(--system);
+      letter-spacing: 0.08em;
+    }
+
+    .support {
+      margin-top: 34px;
+      padding: 21px;
+      border: 2px solid var(--navy);
+      background: rgba(255, 240, 220, 0.94);
+      text-align: center;
+    }
+
+    .support p {
+      margin: 0;
+    }
+
+    .support a {
+      font-weight: bold;
+    }
+
+    @media (max-width: 760px) {
+      .page {
+        width: min(100% - 18px, 560px);
+        padding-top: 22px;
+      }
+
+      .hero {
+        padding: 26px 20px 34px;
+      }
+
+      .hero::after {
+        width: 130px;
+        height: 130px;
+        right: -45px;
+        top: -48px;
+      }
+
+      h1 {
+        max-width: 85%;
+      }
+
+      .routes,
+      .steps {
+        grid-template-columns: 1fr;
+      }
+
+      .steps li {
+        min-height: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <p class="eyebrow">платёж принят · всё в порядке</p>
+      <h1>Оплата прошла</h1>
+      <p class="lead">Спасибо. Вы уже сделали главный шаг, а теперь не нужно угадывать, куда идти дальше: выберите свою покупку ниже, и страница проведёт вас к нужному входу.</p>
+      <div class="status" aria-label="Статус заказа">
+        <span>✓ заказ принят</span>
+        <span>✓ письмо готовится</span>
+        <span>✓ поддержка рядом</span>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="route-title">
+      <h2 id="route-title">Что вы купили?</h2>
+      <p>Если письмо с доступом ещё не успело прийти, это нормально: автоматическая отправка может занять несколько минут. Сначала откройте подходящий маршрут, а затем проверьте почту.</p>
+
+      <div class="routes">
+        <article class="route">
+          <p class="route__number">МАРШРУТ 01</p>
+          <h3>Кинематограф личности</h3>
+          <p>На вводной странице собраны вход в курс, Telegram, порядок первого дня и подсказка по email, чтобы начало обучения получилось спокойным и ясным.</p>
+          <a class="button" href="https://xn--80ae5a0d.com/kl-start">Открыть вводную страницу</a>
+        </article>
+
+        <article class="route">
+          <p class="route__number">МАРШРУТ 02</p>
+          <h3>НАВЬ.КРУГ</h3>
+          <p>Откройте НАВЬ.БОТ, нажмите «Доступ экосистема» и введите тот же email, который указали при покупке.</p>
+          <a class="button" href="https://t.me/pchela_vorobey_bot">Открыть НАВЬ.БОТ</a>
+        </article>
+
+        <article class="route">
+          <p class="route__number">МАРШРУТ 03</p>
+          <h3>Другой курс или лекция</h3>
+          <p>Проверьте письмо на адрес из заказа: в нём будет ссылка или инструкция по доступу. Каталог можно открыть в соседней вкладке и оставить эту страницу перед глазами.</p>
+          <a class="button" href="https://xn--80ae5a0d.com/shop">Вернуться в лавку</a>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="minutes-title">
+      <h2 id="minutes-title">Первые пять минут</h2>
+      <ol class="steps">
+        <li>Проверьте входящие на email из заказа, а если письма пока нет, дайте системе несколько минут.</li>
+        <li>Откройте нужный маршрут выше и используйте тот же email при входе в кабинет или бот.</li>
+        <li>Если письмо не появилось через десять минут, проверьте «Спам» и напишите в поддержку, приложив email заказа.</li>
+      </ol>
+    </section>
+
+    <aside class="support">
+      <p>Что-то выглядит непонятно или доступ не открылся? Напишите <a href="https://t.me/pankovsk1">в поддержку</a>, вам помогут найти покупку и спокойно пройти вход.</p>
+    </aside>
+  </main>
+
+  <script>
+    (function () {
+      function reportHeight() {
+        window.parent.postMessage({
+          source: "purchase-success",
+          height: Math.ceil(document.documentElement.scrollHeight)
+        }, "*");
+      }
+
+      window.addEventListener("load", reportHeight);
+      window.addEventListener("resize", reportHeight);
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(reportHeight);
+      }
+      setTimeout(reportHeight, 250);
+      setTimeout(reportHeight, 1000);
+    })();
+  </script>
+</body>
+</html>

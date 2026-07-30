@@ -154,7 +154,7 @@ a:focus-visible {
 
 .site {
   position: relative;
-  width: 1040px;
+  width: 820px;
   max-width: calc(100% - 20px);
   margin: 14px auto 0;
 }
@@ -172,128 +172,6 @@ a:focus-visible {
 .site-header {
   padding: 8px 12px 20px;
   text-align: center;
-}
-
-.timecapsule-rail {
-  position: absolute;
-  top: 880px;
-  bottom: 760px;
-  display: flex;
-  width: 180px;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-around;
-  gap: 34px;
-  color: #111;
-  font-family: var(--system);
-  pointer-events: none;
-}
-
-.timecapsule-rail--left {
-  left: 0;
-}
-
-.timecapsule-rail--right {
-  right: 0;
-}
-
-.rail-counter,
-.rail-status,
-.rail-webring,
-.rail-quote {
-  width: 166px;
-  margin: 0;
-  padding: 7px 6px;
-  border: 3px ridge #eee;
-  background: rgba(214, 214, 214, 0.93);
-  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
-  font: 10px/1.35 var(--system);
-  text-align: center;
-}
-
-.rail-counter > span,
-.rail-counter > small,
-.rail-status > span,
-.rail-status > small,
-.rail-webring > span {
-  display: block;
-}
-
-.rail-counter b {
-  display: flex;
-  justify-content: center;
-  margin: 5px 0;
-  font-style: normal;
-}
-
-.rail-counter i {
-  display: inline-grid;
-  width: 19px;
-  height: 25px;
-  place-items: center;
-  border: 1px inset #bbb;
-  background: #080808;
-  color: #58ff52;
-  font: normal 17px/1 var(--mono);
-}
-
-.rail-quote {
-  border-style: dotted;
-  background: rgba(255, 255, 255, 0.78);
-  color: #000080;
-  font: italic 13px/1.35 var(--serif);
-}
-
-.rail-webring strong,
-.rail-status strong {
-  display: block;
-  margin-bottom: 5px;
-  color: #000080;
-}
-
-.rail-webring span {
-  color: #0000ee;
-  text-decoration: underline;
-}
-
-.rail-status small,
-.rail-counter small {
-  margin-top: 4px;
-  font: 9px/1.2 var(--mono);
-}
-
-.rail-art {
-  display: grid;
-  width: 180px;
-  margin: 0;
-  place-items: center;
-}
-
-.rail-art img {
-  display: block;
-  max-width: 100%;
-  height: auto;
-  image-rendering: pixelated;
-}
-
-.rail-art--rei img {
-  width: 180px;
-}
-
-.rail-art--dreamcast img {
-  width: 180px;
-}
-
-.rail-art--reaction img {
-  width: 112px;
-}
-
-.rail-art--orca img {
-  width: 120px;
-}
-
-.rail-art--microsoft img {
-  width: 170px;
 }
 
 .welcome-line {
@@ -2573,22 +2451,6 @@ a:focus-visible {
   font-weight: bold;
 }
 
-@media (min-width: 1061px) {
-  .era-strip--rail-swap {
-    display: none;
-  }
-}
-
-@media (max-width: 1060px) {
-  .site {
-    width: 820px;
-  }
-
-  .timecapsule-rail {
-    display: none;
-  }
-}
-
 @media (max-width: 680px) {
   body {
     font-size: 16px;
@@ -3106,7 +2968,6 @@ html.is-embedded .cursor-trail {
 @media print {
   .browser-strip,
   .sidebar,
-  .timecapsule-rail,
   .back-top,
   .guestbook-controls,
   .news-ticker,

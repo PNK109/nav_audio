@@ -2406,6 +2406,11 @@ a:focus-visible {
     margin-top: 8px;
   }
 
+  html.is-embedded .site {
+    /* Keep the sky tile continuous from y=0; move only the course contents. */
+    margin-top: 60px;
+  }
+
   .site-header,
   .content,
   .site-footer,

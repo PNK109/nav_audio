@@ -35,17 +35,27 @@
       '  will-change: auto;',
       '}',
       '#nav-site-film-grain.nav-fx-optimized {',
+      '  position: fixed !important;',
       '  inset: -14% !important;',
       '  width: auto !important;',
       '  height: auto !important;',
+      '  z-index: 2147483646 !important;',
       '  background-repeat: repeat;',
+      '  opacity: .26 !important;',
+      '  mix-blend-mode: soft-light !important;',
       '  animation: nav-grain-shift .48s steps(2, end) infinite;',
       '  will-change: transform;',
       '  backface-visibility: hidden;',
+      '  pointer-events: none !important;',
       '}',
       '#nav-site-dust.nav-fx-optimized {',
+      '  position: fixed !important;',
+      '  inset: 0 auto auto 0 !important;',
+      '  z-index: 2147483644 !important;',
+      '  opacity: .46 !important;',
       '  will-change: auto;',
       '  backface-visibility: hidden;',
+      '  pointer-events: none !important;',
       '}',
       '@keyframes nav-grain-shift {',
       '  0%   { transform: translate3d(-2.5%, -1.5%, 0); }',
@@ -97,9 +107,9 @@
         Math.random() + Math.random() + Math.random() + Math.random() - 2;
       var speck = Math.random();
       var tone =
-        speck < 0.024 ? 30 :
-        speck > 0.976 ? 232 :
-        Math.max(48, Math.min(210, Math.round(128 + centered * 48)));
+        speck < 0.03 ? 24 :
+        speck > 0.97 ? 238 :
+        Math.max(40, Math.min(218, Math.round(128 + centered * 56)));
 
       image.data[index] = tone;
       image.data[index + 1] = tone;
@@ -176,17 +186,49 @@
     var timer = 0;
     var animationFrame = 0;
     var resizeFrame = 0;
+    var scrollFrame = 0;
     var lastTime = 0;
     var frameInterval = lowPower ? 58 : 42;
+    var scrollTop = 0;
+    var documentHeight = 1;
 
     dust.id = 'nav-site-dust';
     dust.className = 'nav-fx-optimized';
     dust.setAttribute('aria-hidden', 'true');
+    dust.dataset.space = 'document';
     document.body.appendChild(dust);
 
-    function resetParticle(particle, initial) {
+    function readScrollTop() {
+      return Math.max(
+        0,
+        window.scrollY ||
+        document.documentElement.scrollTop ||
+        document.body.scrollTop ||
+        0
+      );
+    }
+
+    function readDocumentHeight() {
+      return Math.max(
+        height,
+        document.documentElement.scrollHeight || 0,
+        document.body.scrollHeight || 0
+      );
+    }
+
+    function resetParticle(particle, initial, insideViewport) {
       particle.x = Math.random() * width;
-      particle.y = initial ? Math.random() * height : height + 12 + Math.random() * 80;
+      if (insideViewport || initial) {
+        particle.pageY = Math.min(
+          documentHeight - 1,
+          scrollTop + Math.random() * height
+        );
+      } else {
+        particle.pageY = Math.min(
+          documentHeight - 1,
+          scrollTop + height + 12 + Math.random() * 80
+        );
+      }
       particle.sprite = Math.floor(Math.random() * sprites.length);
       particle.speed = 2.8 + Math.random() * 9.5;
       particle.drift = -2.5 + Math.random() * 5;
@@ -199,6 +241,8 @@
     function sizeDust() {
       width = Math.max(1, window.innerWidth);
       height = Math.max(1, window.innerHeight);
+      scrollTop = readScrollTop();
+      documentHeight = readDocumentHeight();
 
       /*
        * Dust is intentionally soft, so a 1x backing store is visually
@@ -216,21 +260,39 @@
       );
       while (particles.length < targetCount) {
         var particle = {};
-        resetParticle(particle, true);
+        resetParticle(particle, true, true);
         particles.push(particle);
       }
       if (particles.length > targetCount) particles.length = targetCount;
     }
 
+    function syncParticlesToViewport() {
+      var bandTop = scrollTop - 120;
+      var bandBottom = scrollTop + height + 120;
+
+      for (var index = 0; index < particles.length; index++) {
+        var particle = particles[index];
+        if (
+          particle.pageY < bandTop ||
+          particle.pageY > bandBottom ||
+          particle.pageY > documentHeight
+        ) {
+          resetParticle(particle, false, true);
+        }
+      }
+    }
+
     function drawDust(delta) {
       context.clearRect(0, 0, width, height);
       context.globalCompositeOperation = 'screen';
+      scrollTop = readScrollTop();
+      documentHeight = readDocumentHeight();
 
       for (var index = 0; index < particles.length; index++) {
         var particle = particles[index];
         if (!reduceMotion) {
           particle.age += delta;
-          particle.y -= particle.speed * delta;
+          particle.pageY -= particle.speed * delta;
           particle.x += (
             particle.drift +
             Math.sin(particle.age * 0.55 + particle.phase) * 1.4
@@ -239,11 +301,12 @@
 
         if (
           particle.age >= particle.duration ||
-          particle.y < -18 ||
+          particle.pageY < scrollTop - 120 ||
+          particle.pageY > scrollTop + height + 120 ||
           particle.x < -30 ||
           particle.x > width + 30
         ) {
-          resetParticle(particle, false);
+          resetParticle(particle, false, false);
         }
 
         var fadeIn = Math.min(1, particle.age / 1.8);
@@ -256,7 +319,7 @@
         context.drawImage(
           sprite,
           particle.x - sprite.width / 2,
-          particle.y - sprite.height / 2
+          particle.pageY - scrollTop - sprite.height / 2
         );
       }
 
@@ -289,6 +352,15 @@
       cancelAnimationFrame(resizeFrame);
       resizeFrame = requestAnimationFrame(function () {
         sizeDust();
+        drawDust(0);
+      });
+    }, {passive:true});
+    window.addEventListener('scroll', function () {
+      cancelAnimationFrame(scrollFrame);
+      scrollFrame = requestAnimationFrame(function () {
+        scrollTop = readScrollTop();
+        documentHeight = readDocumentHeight();
+        syncParticlesToViewport();
         drawDust(0);
       });
     }, {passive:true});

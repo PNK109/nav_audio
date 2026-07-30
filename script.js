@@ -571,8 +571,7 @@ if (trailAllowed) {
   }
 }
 
-const transparentGif =
-  "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
+const transparentGif = "assets/frame-spacer.svg";
 const motionRegions = Array.from(
   document.querySelectorAll(".site-header, .old-section, .era-strip, .site-footer")
 );

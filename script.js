@@ -1,37 +1,4 @@
 const isEmbedded = window.parent !== window;
-let requestEmbedMeasurement = () => {};
-
-function queueEmbedMeasurement() {
-  requestAnimationFrame(requestEmbedMeasurement);
-}
-
-if (isEmbedded) {
-  document.addEventListener("click", (event) => {
-    const link = event.target.closest('a[href^="#"]');
-    if (!link) return;
-
-    const hash = link.getAttribute("href");
-    const target = hash && hash.length > 1
-      ? document.querySelector(hash)
-      : document.documentElement;
-    if (!target) return;
-
-    event.preventDefault();
-    window.parent.postMessage(
-      {
-        source: "pankovskii-kl",
-        type: "scroll-to",
-        target: hash,
-        top: Math.max(0, Math.round(target.getBoundingClientRect().top + window.scrollY))
-      },
-      "*"
-    );
-
-    if (hash && hash.length > 1) {
-      history.replaceState(null, "", hash);
-    }
-  });
-}
 
 const diagnostics = {
   voice: {
@@ -201,7 +168,6 @@ diagnosticButtons.forEach((button) => {
     diagnosticTitle.textContent = data.title;
     diagnosticText.textContent = data.text;
     diagnosticRoute.textContent = data.route;
-    queueEmbedMeasurement();
   });
 });
 
@@ -242,7 +208,6 @@ function showModule(index) {
       return item;
     })
   );
-  queueEmbedMeasurement();
 }
 
 moduleTabs.forEach((tab) => {
@@ -264,7 +229,6 @@ function showReview(index) {
   reviewName.textContent = data.name;
   reviewDate.textContent = data.date;
   reviewText.textContent = data.text;
-  queueEmbedMeasurement();
 }
 
 document.querySelector("#review-prev").addEventListener("click", () => showReview(currentReview - 1));
@@ -280,7 +244,6 @@ function selectFormat(format) {
     choice.classList.toggle("is-selected", isSelected);
     choice.setAttribute("aria-pressed", isSelected ? "true" : "false");
   });
-  queueEmbedMeasurement();
 }
 
 formatChoices.forEach((choice) => {
@@ -571,7 +534,8 @@ if (trailAllowed) {
   }
 }
 
-const transparentGif = "assets/frame-spacer.svg";
+const transparentGif =
+  "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
 const motionRegions = Array.from(
   document.querySelectorAll(".site-header, .old-section, .era-strip, .site-footer")
 );
@@ -769,12 +733,10 @@ if (window.parent !== window) {
     embedResizeFrame = requestAnimationFrame(measureEmbedHeight);
   }
 
-  requestEmbedMeasurement = scheduleEmbedMeasurement;
   window.addEventListener("load", scheduleEmbedMeasurement);
   window.addEventListener("resize", scheduleEmbedMeasurement, { passive: true });
   window.addEventListener("message", (event) => {
     if (
-      event.source === window.parent &&
       event.data &&
       event.data.source === "tilda-kl" &&
       event.data.type === "request-size"
@@ -783,7 +745,9 @@ if (window.parent !== window) {
     }
   });
 
-  document.addEventListener("toggle", scheduleEmbedMeasurement, true);
+  if ("ResizeObserver" in window && document.body) {
+    new ResizeObserver(scheduleEmbedMeasurement).observe(document.body);
+  }
 
   document.querySelectorAll("img").forEach((image) => {
     if (!image.complete) {

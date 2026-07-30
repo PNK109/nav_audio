@@ -566,5 +566,25 @@
       Кинематограф личности · Егор Панковский · поддержка: @pankovsk1
     </footer>
   </main>
+  <script>
+    (() => {
+      const reportHeight = () => {
+        window.parent.postMessage({
+          source: "kl-start",
+          height: Math.ceil(document.documentElement.scrollHeight)
+        }, "*");
+      };
+
+      window.addEventListener("load", reportHeight);
+      window.addEventListener("resize", reportHeight);
+
+      if ("ResizeObserver" in window) {
+        new ResizeObserver(reportHeight).observe(document.documentElement);
+      }
+
+      window.setTimeout(reportHeight, 300);
+      window.setTimeout(reportHeight, 1200);
+    })();
+  </script>
 </body>
 </html>

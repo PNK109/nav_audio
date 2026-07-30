@@ -2231,6 +2231,76 @@ a:focus-visible {
   background: #d5ffdc;
 }
 
+.purchase-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 14px 0 10px;
+}
+
+.purchase-card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 10px;
+  border: 3px outset #eee;
+  background: rgba(255, 248, 184, 0.94);
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.38);
+  text-align: left;
+}
+
+.purchase-card--group {
+  background: rgba(232, 255, 243, 0.95);
+}
+
+.purchase-card--personal {
+  background: rgba(243, 234, 255, 0.95);
+}
+
+.purchase-card__mode {
+  min-height: 24px;
+  margin: 0 0 7px !important;
+  color: var(--blue);
+  font: bold 10px/1.2 var(--mono);
+  letter-spacing: 0.04em;
+}
+
+.purchase-card h3 {
+  margin: 0;
+  font: bold 16px/1.15 var(--system);
+}
+
+.purchase-card__price {
+  margin: 7px 0 4px !important;
+  color: #075d19;
+  font: bold 22px/1 var(--system);
+}
+
+.purchase-card > p:not(.purchase-card__mode, .purchase-card__price) {
+  flex: 1;
+  margin: 5px 0 12px !important;
+  font: 12px/1.38 var(--system);
+}
+
+.purchase-card__button {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  padding: 8px 5px;
+  text-align: center;
+}
+
+.purchase-help {
+  max-width: 62ch !important;
+  margin: 13px auto 0 !important;
+  padding: 8px 10px;
+  border: 1px dashed #555;
+  background: rgba(223, 245, 255, 0.92);
+  font-size: var(--type-small);
+  text-align: center;
+}
+
 .center {
   max-width: none !important;
   text-align: center;
@@ -2669,6 +2739,18 @@ a:focus-visible {
 
   .format-selector {
     grid-template-columns: 1fr;
+  }
+
+  .purchase-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .purchase-card {
+    padding: 13px;
+  }
+
+  .purchase-card__mode {
+    min-height: 0;
   }
 
   .formats-table {

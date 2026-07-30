@@ -535,11 +535,13 @@ if (trailAllowed) {
 }
 
 const transparentGif =
-  "data:image/gif;base64,R0lGODlhAQABAAAAACw=";
+  "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
 const motionRegions = Array.from(
   document.querySelectorAll(".site-header, .old-section, .ad-break, .site-footer")
 );
-const managedGifs = Array.from(document.querySelectorAll('img[src*=".gif"]'));
+const managedGifs = Array.from(
+  document.querySelectorAll('img[src*=".gif"]:not([data-always-live])')
+);
 
 motionRegions.forEach((region) => region.classList.add("motion-region"));
 managedGifs.forEach((image) => {

@@ -162,6 +162,7 @@ html.is-embedded .film-grain,
 html.is-embedded .film-bloom {
   position: absolute;
   inset: auto 0 auto 0;
+  top: 0;
 }
 
 .plain-title h1,

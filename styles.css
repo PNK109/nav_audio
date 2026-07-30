@@ -35,7 +35,7 @@
 
 html {
   overflow-x: hidden;
-  scroll-behavior: smooth;
+  scroll-behavior: auto;
 }
 
 body {
@@ -153,7 +153,8 @@ a:focus-visible {
 }
 
 .site {
-  width: 820px;
+  position: relative;
+  width: 1040px;
   max-width: calc(100% - 20px);
   margin: 14px auto 0;
 }
@@ -171,6 +172,128 @@ a:focus-visible {
 .site-header {
   padding: 8px 12px 20px;
   text-align: center;
+}
+
+.timecapsule-rail {
+  position: absolute;
+  top: 880px;
+  bottom: 760px;
+  display: flex;
+  width: 180px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  gap: 34px;
+  color: #111;
+  font-family: var(--system);
+  pointer-events: none;
+}
+
+.timecapsule-rail--left {
+  left: 0;
+}
+
+.timecapsule-rail--right {
+  right: 0;
+}
+
+.rail-counter,
+.rail-status,
+.rail-webring,
+.rail-quote {
+  width: 166px;
+  margin: 0;
+  padding: 7px 6px;
+  border: 3px ridge #eee;
+  background: rgba(214, 214, 214, 0.93);
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
+  font: 10px/1.35 var(--system);
+  text-align: center;
+}
+
+.rail-counter > span,
+.rail-counter > small,
+.rail-status > span,
+.rail-status > small,
+.rail-webring > span {
+  display: block;
+}
+
+.rail-counter b {
+  display: flex;
+  justify-content: center;
+  margin: 5px 0;
+  font-style: normal;
+}
+
+.rail-counter i {
+  display: inline-grid;
+  width: 19px;
+  height: 25px;
+  place-items: center;
+  border: 1px inset #bbb;
+  background: #080808;
+  color: #58ff52;
+  font: normal 17px/1 var(--mono);
+}
+
+.rail-quote {
+  border-style: dotted;
+  background: rgba(255, 255, 255, 0.78);
+  color: #000080;
+  font: italic 13px/1.35 var(--serif);
+}
+
+.rail-webring strong,
+.rail-status strong {
+  display: block;
+  margin-bottom: 5px;
+  color: #000080;
+}
+
+.rail-webring span {
+  color: #0000ee;
+  text-decoration: underline;
+}
+
+.rail-status small,
+.rail-counter small {
+  margin-top: 4px;
+  font: 9px/1.2 var(--mono);
+}
+
+.rail-art {
+  display: grid;
+  width: 180px;
+  margin: 0;
+  place-items: center;
+}
+
+.rail-art img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  image-rendering: pixelated;
+}
+
+.rail-art--rei img {
+  width: 180px;
+}
+
+.rail-art--dreamcast img {
+  width: 180px;
+}
+
+.rail-art--reaction img {
+  width: 112px;
+}
+
+.rail-art--orca img {
+  width: 120px;
+}
+
+.rail-art--microsoft img {
+  width: 170px;
 }
 
 .welcome-line {
@@ -684,31 +807,19 @@ a:focus-visible {
   font: 11px/1 var(--system);
 }
 
-.ad-break {
+.era-strip {
   position: relative;
   display: block;
   width: min(468px, calc(100% - 20px));
-  margin: -13px auto 42px;
-  padding-top: 15px;
+  margin: -13px auto 36px;
+  padding: 0;
   background: transparent !important;
 }
 
-.ad-break::before {
-  content: "BANNER EXCHANGE 109 :: CLICK IMAGE TO ENTER";
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  color: #111;
-  font: bold 9px/1 var(--system);
-  letter-spacing: 0.08em;
-  text-align: center;
-  text-shadow: 1px 1px #fff;
-}
-
-.ad-break img {
+.era-strip img {
   display: block;
   width: 468px;
+  margin: auto;
   border: 1px solid #111;
   box-shadow:
     0 0 0 2px rgba(255, 255, 255, 0.8),
@@ -716,91 +827,72 @@ a:focus-visible {
   image-rendering: pixelated;
 }
 
-.ad-break--compact {
+.era-strip--compact {
   width: min(304px, calc(100% - 20px));
 }
 
-.ad-break--compact img {
+.era-strip--compact img {
   width: 304px;
   border: 0;
   box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.13);
 }
 
-.ad-break--asset {
+.era-strip--asset {
   display: grid;
   width: min(620px, calc(100% - 20px));
   place-items: center;
 }
 
-.ad-break--asset img {
+.era-strip--asset img {
   width: auto;
   max-width: 100%;
   height: auto;
   object-fit: contain;
 }
 
-.ad-break--dreamcast img {
+.era-strip--dreamcast img {
   width: 224px;
 }
 
-.ad-break--super-rpg img {
+.era-strip--super-rpg img {
   width: min(455px, 100%);
 }
 
-.ad-break--technico img {
+.era-strip--technico img {
   width: min(400px, 100%);
 }
 
-.ad-break--kingdom img {
+.era-strip--kingdom img {
   width: min(432px, 100%);
 }
 
-.ad-break--rei {
+.era-strip--rei {
   width: min(200px, calc(100% - 20px));
   margin-right: 12%;
 }
 
-.ad-break--rei img {
+.era-strip--rei img {
   width: 200px;
 }
 
-.ad-break--wide img {
+.era-strip--wide img {
   width: min(620px, 100%);
 }
 
-.ad-break--orca {
-  grid-template-columns: minmax(0, 1fr) 120px;
-  width: min(330px, calc(100% - 20px));
+.era-strip--orca {
+  width: min(142px, calc(100% - 20px));
   margin-left: 14%;
-  padding: 20px 6px 6px;
+  padding: 6px;
   border: 3px ridge #eee;
   background: #c0c0c0 !important;
   box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.22);
-  color: #000080 !important;
-  font: bold 13px/1.2 var(--system);
-  text-align: center;
-  text-decoration: none;
 }
 
-.ad-break--orca::before {
-  top: 5px;
-}
-
-.ad-break--orca > span {
-  display: block;
-  padding: 6px;
-}
-
-.ad-break--orca small {
-  display: block;
-  margin-top: 5px;
-  color: #000;
-  font: 9px/1.2 var(--mono);
-}
-
-.ad-break--orca img {
+.era-strip--orca img {
   width: 120px;
   height: 119px;
+  border: 0;
+  box-shadow: none;
   object-fit: contain;
 }
 
@@ -2441,27 +2533,19 @@ a:focus-visible {
   }
 }
 
-.microsoft-ad {
+.microsoft-tile {
   display: grid;
   align-content: center;
-  gap: 11px;
   margin: 0;
 }
 
-.microsoft-ad img {
+.microsoft-tile img {
   display: block;
   width: 180px;
   height: 43px;
   margin: auto;
   border: 0;
   image-rendering: pixelated;
-}
-
-.microsoft-ad span {
-  display: block;
-  color: #444;
-  font: 9px/1.35 var(--mono);
-  letter-spacing: 0.04em;
 }
 
 .footer-gif-gallery {
@@ -2487,6 +2571,22 @@ a:focus-visible {
 .footer-mark {
   color: var(--blue);
   font-weight: bold;
+}
+
+@media (min-width: 1061px) {
+  .era-strip--rail-swap {
+    display: none;
+  }
+}
+
+@media (max-width: 1060px) {
+  .site {
+    width: 820px;
+  }
+
+  .timecapsule-rail {
+    display: none;
+  }
 }
 
 @media (max-width: 680px) {
@@ -2585,17 +2685,13 @@ a:focus-visible {
     box-shadow: 3px 4px 0 #000;
   }
 
-  .ad-break--rei,
-  .ad-break--orca {
+  .era-strip--rei,
+  .era-strip--orca {
     margin-right: auto;
     margin-left: auto;
   }
 
-  .ad-break--orca {
-    grid-template-columns: minmax(0, 1fr) 104px;
-  }
-
-  .ad-break--orca img {
+  .era-strip--orca img {
     width: 104px;
     height: auto;
   }
@@ -2951,7 +3047,7 @@ a:focus-visible {
     height: 127px;
   }
 
-  .microsoft-ad img {
+  .microsoft-tile img {
     width: 180px;
     height: 43px;
   }
@@ -3010,6 +3106,7 @@ html.is-embedded .cursor-trail {
 @media print {
   .browser-strip,
   .sidebar,
+  .timecapsule-rail,
   .back-top,
   .guestbook-controls,
   .news-ticker,

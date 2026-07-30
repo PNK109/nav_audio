@@ -1,4 +1,37 @@
 const isEmbedded = window.parent !== window;
+let requestEmbedMeasurement = () => {};
+
+function queueEmbedMeasurement() {
+  requestAnimationFrame(requestEmbedMeasurement);
+}
+
+if (isEmbedded) {
+  document.addEventListener("click", (event) => {
+    const link = event.target.closest('a[href^="#"]');
+    if (!link) return;
+
+    const hash = link.getAttribute("href");
+    const target = hash && hash.length > 1
+      ? document.querySelector(hash)
+      : document.documentElement;
+    if (!target) return;
+
+    event.preventDefault();
+    window.parent.postMessage(
+      {
+        source: "pankovskii-kl",
+        type: "scroll-to",
+        target: hash,
+        top: Math.max(0, Math.round(target.getBoundingClientRect().top + window.scrollY))
+      },
+      "*"
+    );
+
+    if (hash && hash.length > 1) {
+      history.replaceState(null, "", hash);
+    }
+  });
+}
 
 const diagnostics = {
   voice: {
@@ -168,6 +201,7 @@ diagnosticButtons.forEach((button) => {
     diagnosticTitle.textContent = data.title;
     diagnosticText.textContent = data.text;
     diagnosticRoute.textContent = data.route;
+    queueEmbedMeasurement();
   });
 });
 
@@ -208,6 +242,7 @@ function showModule(index) {
       return item;
     })
   );
+  queueEmbedMeasurement();
 }
 
 moduleTabs.forEach((tab) => {
@@ -229,6 +264,7 @@ function showReview(index) {
   reviewName.textContent = data.name;
   reviewDate.textContent = data.date;
   reviewText.textContent = data.text;
+  queueEmbedMeasurement();
 }
 
 document.querySelector("#review-prev").addEventListener("click", () => showReview(currentReview - 1));
@@ -244,6 +280,7 @@ function selectFormat(format) {
     choice.classList.toggle("is-selected", isSelected);
     choice.setAttribute("aria-pressed", isSelected ? "true" : "false");
   });
+  queueEmbedMeasurement();
 }
 
 formatChoices.forEach((choice) => {
@@ -534,45 +571,21 @@ if (trailAllowed) {
   }
 }
 
-const transparentGif =
-  "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
 const motionRegions = Array.from(
-  document.querySelectorAll(".site-header, .old-section, .ad-break, .site-footer")
-);
-const managedGifs = Array.from(
-  document.querySelectorAll('img[src*=".gif"]:not([data-always-live])')
+  document.querySelectorAll(".site-header, .old-section, .era-strip, .site-footer")
 );
 
 motionRegions.forEach((region) => region.classList.add("motion-region"));
-managedGifs.forEach((image) => {
-  image.dataset.liveSrc = image.getAttribute("src");
+document.querySelectorAll('img[src*=".gif"]').forEach((image) => {
   image.decoding = "async";
 });
 
-function regionIsActive(region) {
-  return !region || region.classList.contains("is-near-viewport");
-}
-
-function setManagedGifActive(image, active) {
-  const liveSource = image.dataset.liveSrc;
-  if (!liveSource) return;
-
-  const nextSource = active ? liveSource : transparentGif;
-  if (image.getAttribute("src") !== nextSource) {
-    image.setAttribute("src", nextSource);
-  }
-}
-
 function setManagedGifSource(image, source) {
-  image.dataset.liveSrc = source;
-  setManagedGifActive(image, regionIsActive(image.closest(".motion-region")));
+  image.setAttribute("src", source);
 }
 
 function setMotionRegionActive(region, active) {
   region.classList.toggle("is-near-viewport", active);
-  region.querySelectorAll('img[data-live-src]').forEach((image) => {
-    setManagedGifActive(image, active);
-  });
 }
 
 function syncEmbeddedMotionViewport(viewport) {
@@ -733,10 +746,12 @@ if (window.parent !== window) {
     embedResizeFrame = requestAnimationFrame(measureEmbedHeight);
   }
 
+  requestEmbedMeasurement = scheduleEmbedMeasurement;
   window.addEventListener("load", scheduleEmbedMeasurement);
   window.addEventListener("resize", scheduleEmbedMeasurement, { passive: true });
   window.addEventListener("message", (event) => {
     if (
+      event.source === window.parent &&
       event.data &&
       event.data.source === "tilda-kl" &&
       event.data.type === "request-size"
@@ -745,9 +760,7 @@ if (window.parent !== window) {
     }
   });
 
-  if ("ResizeObserver" in window && document.body) {
-    new ResizeObserver(scheduleEmbedMeasurement).observe(document.body);
-  }
+  document.addEventListener("toggle", scheduleEmbedMeasurement, true);
 
   document.querySelectorAll("img").forEach((image) => {
     if (!image.complete) {

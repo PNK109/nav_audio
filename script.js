@@ -250,9 +250,9 @@ formatChoices.forEach((choice) => {
   choice.addEventListener("click", () => selectFormat(choice.dataset.format));
 });
 
-function initLiveFilmGrain() {
-  if (isEmbedded) return;
+let syncEmbeddedVisualFx = () => {};
 
+function initLiveFilmGrain() {
   const grainCanvas = document.createElement("canvas");
   const grainContext = grainCanvas.getContext("2d", {
     alpha: false,
@@ -260,6 +260,7 @@ function initLiveFilmGrain() {
   });
   const tileCanvas = document.createElement("canvas");
   const tileContext = tileCanvas.getContext("2d", { alpha: false });
+  const bloomLayer = document.createElement("div");
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const lowPower =
     (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) ||
@@ -269,20 +270,37 @@ function initLiveFilmGrain() {
   const frameInterval = lowPower ? 125 : 84;
   let grainTimer = 0;
   let resizeFrame = 0;
+  let visualFxVisible = true;
+  let embeddedViewportTop = 0;
+  let embeddedViewportHeight = isEmbedded
+    ? Math.min(1400, Math.max(480, window.screen.availHeight || 900))
+    : Math.max(1, window.innerHeight);
 
-  grainCanvas.className = "film-grain";
+  grainCanvas.className = isEmbedded
+    ? "film-grain film-grain--embedded"
+    : "film-grain";
   grainCanvas.setAttribute("aria-hidden", "true");
+  bloomLayer.className = isEmbedded
+    ? "film-bloom film-bloom--embedded"
+    : "film-bloom";
+  bloomLayer.setAttribute("aria-hidden", "true");
   tileCanvas.width = tileSize;
   tileCanvas.height = tileSize;
-  document.body.append(grainCanvas);
+  document.body.append(bloomLayer, grainCanvas);
 
   function sizeGrainCanvas() {
     const width = Math.max(1, window.innerWidth);
-    const height = Math.max(1, window.innerHeight);
+    const height = isEmbedded
+      ? Math.max(1, embeddedViewportHeight)
+      : Math.max(1, window.innerHeight);
     const scale = Math.min(1, Math.sqrt(maxPixels / (width * height)));
 
     grainCanvas.width = Math.max(1, Math.ceil(width * scale));
     grainCanvas.height = Math.max(1, Math.ceil(height * scale));
+    grainCanvas.style.width = `${width}px`;
+    grainCanvas.style.height = `${height}px`;
+    bloomLayer.style.width = `${width}px`;
+    bloomLayer.style.height = `${height}px`;
     grainContext.imageSmoothingEnabled = false;
   }
 
@@ -316,7 +334,7 @@ function initLiveFilmGrain() {
 
   function runGrain() {
     stopGrain();
-    if (document.hidden) return;
+    if (document.hidden || !visualFxVisible) return;
 
     drawLivingGrain();
     if (!reduceMotion) {
@@ -324,6 +342,37 @@ function initLiveFilmGrain() {
         requestAnimationFrame(runGrain);
       }, frameInterval);
     }
+  }
+
+  function updateEmbeddedVisualFx(viewport) {
+    if (!isEmbedded) return;
+
+    const visible = Boolean(viewport.visible);
+    const nextTop = Math.max(0, Number(viewport.top) || 0);
+    const nextBottom = Math.max(nextTop + 1, Number(viewport.bottom) || nextTop + 1);
+    const nextHeight = Math.max(1, Math.min(1400, nextBottom - nextTop));
+    const topChanged = nextTop !== embeddedViewportTop;
+    const sizeChanged =
+      nextHeight !== embeddedViewportHeight ||
+      window.innerWidth !== Number.parseFloat(grainCanvas.style.width);
+
+    visualFxVisible = visible;
+    grainCanvas.hidden = !visible;
+    bloomLayer.hidden = !visible;
+
+    if (!visible) {
+      stopGrain();
+      return;
+    }
+
+    embeddedViewportTop = nextTop;
+    embeddedViewportHeight = nextHeight;
+    if (topChanged) {
+      grainCanvas.style.top = `${embeddedViewportTop}px`;
+      bloomLayer.style.top = `${embeddedViewportTop}px`;
+    }
+    if (sizeChanged) sizeGrainCanvas();
+    runGrain();
   }
 
   window.addEventListener("resize", () => {
@@ -339,8 +388,17 @@ function initLiveFilmGrain() {
     else runGrain();
   });
 
-  sizeGrainCanvas();
-  runGrain();
+  if (isEmbedded) {
+    syncEmbeddedVisualFx = updateEmbeddedVisualFx;
+    updateEmbeddedVisualFx({
+      top: 0,
+      bottom: embeddedViewportHeight,
+      visible: true
+    });
+  } else {
+    sizeGrainCanvas();
+    runGrain();
+  }
 }
 
 initLiveFilmGrain();
@@ -620,6 +678,7 @@ if (isEmbedded) {
     ) {
       scheduleEmbeddedMotionViewport(data);
       syncEmbeddedTrailViewport(data);
+      syncEmbeddedVisualFx(data);
     }
   });
 } else if ("IntersectionObserver" in window) {

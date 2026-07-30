@@ -537,7 +537,7 @@ if (trailAllowed) {
 const transparentGif =
   "data:image/gif;base64,R0lGODlhAQABAAAAACw=";
 const motionRegions = Array.from(
-  document.querySelectorAll(".site-header, .old-section, .site-footer")
+  document.querySelectorAll(".site-header, .old-section, .ad-break, .site-footer")
 );
 const managedGifs = Array.from(document.querySelectorAll('img[src*=".gif"]'));
 

@@ -2991,11 +2991,6 @@ html.is-embedded body {
   background-attachment: scroll;
 }
 
-html.is-embedded,
-html.is-embedded body {
-  overflow-y: hidden;
-  overscroll-behavior-y: none;
-}
 
 html.is-embedded .cursor-trail {
   position: absolute;

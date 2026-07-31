@@ -691,31 +691,52 @@ showModule(0);
 if (window.parent !== window) {
   const embedMessageSource = "pankovskii-kl";
   let embedResizeFrame = 0;
+  let embedSettleTimer = 0;
   let lastEmbedHeight = 0;
+  let lastEmbedWidth = Math.round(document.documentElement.clientWidth);
+
+  function stableDocumentEnd() {
+    const site = document.querySelector(".site");
+    if (site) {
+      /*
+       * offsetTop + offsetHeight are layout values. Unlike a viewport rect,
+       * they do not fluctuate when the parent page scrolls near the footer.
+       */
+      return Math.ceil(site.offsetTop + site.offsetHeight);
+    }
+
+    const endMarker = document.querySelector("#procedural-grass");
+    if (endMarker) {
+      let top = 0;
+      let node = endMarker;
+      while (node) {
+        top += node.offsetTop || 0;
+        node = node.offsetParent;
+      }
+      return Math.ceil(top + endMarker.offsetHeight);
+    }
+
+    return Math.ceil(document.documentElement.scrollHeight);
+  }
 
   function measureEmbedHeight() {
     embedResizeFrame = 0;
 
-    const endMarker = document.querySelector("#procedural-grass");
-    const contentBottom = endMarker
-      ? Math.ceil(endMarker.getBoundingClientRect().bottom + window.scrollY)
-      : 0;
-    const bodyHeight = document.body
-      ? Math.max(document.body.scrollHeight, document.body.offsetHeight)
-      : 0;
-    const rootHeight = Math.max(
-      document.documentElement.scrollHeight,
-      document.documentElement.offsetHeight
-    );
-    /*
-     * The grass is the intentional visual end of the embedded course.
-     * On mobile Safari, viewport-sized technical layers can inflate the
-     * document scrollHeight and leave a visible cloud gap before Tilda's
-     * footer. Prefer the grass edge whenever it exists.
-     */
-    const height = contentBottom || Math.ceil(Math.max(bodyHeight, rootHeight));
+    const width = Math.round(document.documentElement.clientWidth);
+    if (Math.abs(width - lastEmbedWidth) > 1) {
+      lastEmbedWidth = width;
+      lastEmbedHeight = 0;
+    }
 
-    if (height < 1 || Math.abs(height - lastEmbedHeight) < 2) return;
+    const height = stableDocumentEnd();
+    if (height < 1) return;
+
+    /*
+     * The parent iframe may resize its own viewport after receiving this
+     * message. Never answer that feedback with a smaller or sub-pixel-adjusted
+     * height: this was the source of the footer oscillation.
+     */
+    if (lastEmbedHeight && height <= lastEmbedHeight + 3) return;
     lastEmbedHeight = height;
 
     window.parent.postMessage(
@@ -733,34 +754,42 @@ if (window.parent !== window) {
     embedResizeFrame = requestAnimationFrame(measureEmbedHeight);
   }
 
-  window.addEventListener("load", scheduleEmbedMeasurement);
-  window.addEventListener("resize", scheduleEmbedMeasurement, { passive: true });
+  function scheduleSettledEmbedMeasurement() {
+    window.clearTimeout(embedSettleTimer);
+    embedSettleTimer = window.setTimeout(scheduleEmbedMeasurement, 120);
+  }
+
+  window.addEventListener("load", scheduleSettledEmbedMeasurement);
+  window.addEventListener("resize", scheduleSettledEmbedMeasurement, { passive: true });
   window.addEventListener("message", (event) => {
     if (
       event.data &&
       event.data.source === "tilda-kl" &&
       event.data.type === "request-size"
     ) {
-      scheduleEmbedMeasurement();
+      scheduleSettledEmbedMeasurement();
     }
   });
 
-  if ("ResizeObserver" in window && document.body) {
-    new ResizeObserver(scheduleEmbedMeasurement).observe(document.body);
+  if ("ResizeObserver" in window) {
+    const layoutRoot = document.querySelector(".site");
+    if (layoutRoot) {
+      new ResizeObserver(scheduleSettledEmbedMeasurement).observe(layoutRoot);
+    }
   }
 
   document.querySelectorAll("img").forEach((image) => {
     if (!image.complete) {
-      image.addEventListener("load", scheduleEmbedMeasurement, { once: true });
-      image.addEventListener("error", scheduleEmbedMeasurement, { once: true });
+      image.addEventListener("load", scheduleSettledEmbedMeasurement, { once: true });
+      image.addEventListener("error", scheduleSettledEmbedMeasurement, { once: true });
     }
   });
 
   if (document.fonts && document.fonts.ready) {
-    document.fonts.ready.then(scheduleEmbedMeasurement);
+    document.fonts.ready.then(scheduleSettledEmbedMeasurement);
   }
 
   scheduleEmbedMeasurement();
-  window.setTimeout(scheduleEmbedMeasurement, 500);
-  window.setTimeout(scheduleEmbedMeasurement, 1600);
+  window.setTimeout(scheduleSettledEmbedMeasurement, 500);
+  window.setTimeout(scheduleSettledEmbedMeasurement, 1600);
 }

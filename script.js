@@ -534,45 +534,23 @@ if (trailAllowed) {
   }
 }
 
-const transparentGif =
-  "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
 const motionRegions = Array.from(
   document.querySelectorAll(".site-header, .old-section, .era-strip, .site-footer")
 );
-const managedGifs = Array.from(
-  document.querySelectorAll('img[src*=".gif"]:not([data-always-live])')
-);
+const managedGifs = Array.from(document.querySelectorAll('img[src*=".gif"]'));
 
 motionRegions.forEach((region) => region.classList.add("motion-region"));
 managedGifs.forEach((image) => {
-  image.dataset.liveSrc = image.getAttribute("src");
   image.decoding = "async";
 });
 
-function regionIsActive(region) {
-  return !region || region.classList.contains("is-near-viewport");
-}
-
-function setManagedGifActive(image, active) {
-  const liveSource = image.dataset.liveSrc;
-  if (!liveSource) return;
-
-  const nextSource = active ? liveSource : transparentGif;
-  if (image.getAttribute("src") !== nextSource) {
-    image.setAttribute("src", nextSource);
-  }
-}
-
 function setManagedGifSource(image, source) {
-  image.dataset.liveSrc = source;
-  setManagedGifActive(image, regionIsActive(image.closest(".motion-region")));
+  if (!image || image.getAttribute("src") === source) return;
+  image.setAttribute("src", source);
 }
 
 function setMotionRegionActive(region, active) {
   region.classList.toggle("is-near-viewport", active);
-  region.querySelectorAll('img[data-live-src]').forEach((image) => {
-    setManagedGifActive(image, active);
-  });
 }
 
 function syncEmbeddedMotionViewport(viewport) {
@@ -582,9 +560,8 @@ function syncEmbeddedMotionViewport(viewport) {
   const visible = Boolean(viewport.visible);
 
   motionRegions.forEach((region) => {
-    const rect = region.getBoundingClientRect();
-    const regionTop = rect.top + window.scrollY;
-    const regionBottom = regionTop + Math.max(rect.height, region.offsetHeight);
+    const regionTop = region.offsetTop;
+    const regionBottom = regionTop + region.offsetHeight;
     setMotionRegionActive(
       region,
       visible && regionBottom >= top && regionTop <= bottom
@@ -606,11 +583,7 @@ function scheduleEmbeddedMotionViewport(viewport) {
 }
 
 if (isEmbedded) {
-  syncEmbeddedMotionViewport({
-    top: 0,
-    bottom: Math.min(1000, document.documentElement.scrollHeight),
-    visible: true
-  });
+  motionRegions.forEach((region) => setMotionRegionActive(region, true));
 
   window.addEventListener("message", (event) => {
     const data = event.data;
@@ -638,15 +611,25 @@ if (isEmbedded) {
 
 const grass = document.querySelector("#procedural-grass");
 
-function buildGrass() {
+let grassLayoutWidth = 0;
+
+function buildGrass(force = false) {
   if (!grass) return;
 
-  let seed = Math.max(320, window.innerWidth) + 109;
+  const layoutWidth = Math.max(320, Math.round(document.documentElement.clientWidth));
+  if (
+    !force &&
+    grass.childElementCount &&
+    Math.abs(layoutWidth - grassLayoutWidth) < 2
+  ) return;
+
+  grassLayoutWidth = layoutWidth;
+  let seed = layoutWidth + 109;
   const random = () => {
     seed = (seed * 1664525 + 1013904223) >>> 0;
     return seed / 4294967296;
   };
-  const bladeCount = Math.min(120, Math.max(48, Math.ceil(window.innerWidth / 11)));
+  const bladeCount = Math.min(120, Math.max(48, Math.ceil(layoutWidth / 11)));
   const fragment = document.createDocumentFragment();
   const colors = ["#4f9c35", "#68ad3d", "#3f842f", "#82bd43", "#2f7429"];
 
@@ -672,10 +655,10 @@ function buildGrass() {
 let grassResizeFrame = 0;
 window.addEventListener("resize", () => {
   cancelAnimationFrame(grassResizeFrame);
-  grassResizeFrame = requestAnimationFrame(buildGrass);
+  grassResizeFrame = requestAnimationFrame(() => buildGrass(false));
 }, { passive: true });
 
-buildGrass();
+buildGrass(true);
 selectFormat("solo");
 showReview(0);
 showModule(0);
@@ -683,12 +666,11 @@ showModule(0);
 /*
  * Tilda T123 embed bridge.
  *
- * The course page is embedded cross-origin, so the parent Tilda page cannot
- * read its document height directly. Report the real rendered height whenever
- * content, images, fonts, or the viewport change. This code is inert when the
- * page is opened normally outside an iframe.
+ * The embedded page has one immutable layout end: the bottom edge of the
+ * procedural grass. Measurements use layout offsets only and are never tied
+ * to scroll position or animation frames.
  */
-if (window.parent !== window) {
+if (isEmbedded) {
   const embedMessageSource = "pankovskii-kl";
   let embedResizeFrame = 0;
   let embedSettleTimer = 0;
@@ -696,30 +678,20 @@ if (window.parent !== window) {
   let lastEmbedWidth = Math.round(document.documentElement.clientWidth);
 
   function stableDocumentEnd() {
+    const endMarker = document.querySelector("#procedural-grass");
+    if (endMarker) {
+      return Math.ceil(endMarker.offsetTop + endMarker.offsetHeight);
+    }
+
     const site = document.querySelector(".site");
     if (site) {
-      /*
-       * offsetTop + offsetHeight are layout values. Unlike a viewport rect,
-       * they do not fluctuate when the parent page scrolls near the footer.
-       */
       return Math.ceil(site.offsetTop + site.offsetHeight);
     }
 
-    const endMarker = document.querySelector("#procedural-grass");
-    if (endMarker) {
-      let top = 0;
-      let node = endMarker;
-      while (node) {
-        top += node.offsetTop || 0;
-        node = node.offsetParent;
-      }
-      return Math.ceil(top + endMarker.offsetHeight);
-    }
-
-    return Math.ceil(document.documentElement.scrollHeight);
+    return Math.ceil(document.body ? document.body.scrollHeight : 0);
   }
 
-  function measureEmbedHeight() {
+  function measureEmbedHeight(force = false) {
     embedResizeFrame = 0;
 
     const width = Math.round(document.documentElement.clientWidth);
@@ -730,15 +702,9 @@ if (window.parent !== window) {
 
     const height = stableDocumentEnd();
     if (height < 1) return;
+    if (!force && lastEmbedHeight && Math.abs(height - lastEmbedHeight) < 4) return;
 
-    /*
-     * The parent iframe may resize its own viewport after receiving this
-     * message. Never answer that feedback with a smaller or sub-pixel-adjusted
-     * height: this was the source of the footer oscillation.
-     */
-    if (lastEmbedHeight && height <= lastEmbedHeight + 3) return;
     lastEmbedHeight = height;
-
     window.parent.postMessage(
       {
         source: embedMessageSource,
@@ -749,47 +715,54 @@ if (window.parent !== window) {
     );
   }
 
-  function scheduleEmbedMeasurement() {
+  function scheduleEmbedMeasurement(force = false) {
     cancelAnimationFrame(embedResizeFrame);
-    embedResizeFrame = requestAnimationFrame(measureEmbedHeight);
+    embedResizeFrame = requestAnimationFrame(() => measureEmbedHeight(force));
   }
 
-  function scheduleSettledEmbedMeasurement() {
+  function scheduleSettledEmbedMeasurement(force = false) {
     window.clearTimeout(embedSettleTimer);
-    embedSettleTimer = window.setTimeout(scheduleEmbedMeasurement, 120);
+    embedSettleTimer = window.setTimeout(
+      () => scheduleEmbedMeasurement(force),
+      120
+    );
   }
 
-  window.addEventListener("load", scheduleSettledEmbedMeasurement);
-  window.addEventListener("resize", scheduleSettledEmbedMeasurement, { passive: true });
+  window.addEventListener("load", () => scheduleSettledEmbedMeasurement(true));
+  window.addEventListener("resize", () => {
+    const width = Math.round(document.documentElement.clientWidth);
+    if (Math.abs(width - lastEmbedWidth) > 1) {
+      scheduleSettledEmbedMeasurement(true);
+    }
+  }, { passive: true });
+
   window.addEventListener("message", (event) => {
     if (
+      event.source === window.parent &&
       event.data &&
       event.data.source === "tilda-kl" &&
       event.data.type === "request-size"
     ) {
-      scheduleSettledEmbedMeasurement();
+      scheduleSettledEmbedMeasurement(true);
     }
   });
 
-  if ("ResizeObserver" in window) {
-    const layoutRoot = document.querySelector(".site");
-    if (layoutRoot) {
-      new ResizeObserver(scheduleSettledEmbedMeasurement).observe(layoutRoot);
-    }
-  }
+  document.addEventListener("toggle", () => {
+    scheduleSettledEmbedMeasurement(false);
+  }, true);
 
   document.querySelectorAll("img").forEach((image) => {
     if (!image.complete) {
-      image.addEventListener("load", scheduleSettledEmbedMeasurement, { once: true });
-      image.addEventListener("error", scheduleSettledEmbedMeasurement, { once: true });
+      image.addEventListener("load", () => scheduleSettledEmbedMeasurement(false), { once: true });
+      image.addEventListener("error", () => scheduleSettledEmbedMeasurement(false), { once: true });
     }
   });
 
   if (document.fonts && document.fonts.ready) {
-    document.fonts.ready.then(scheduleSettledEmbedMeasurement);
+    document.fonts.ready.then(() => scheduleSettledEmbedMeasurement(true));
   }
 
-  scheduleEmbedMeasurement();
-  window.setTimeout(scheduleSettledEmbedMeasurement, 500);
-  window.setTimeout(scheduleSettledEmbedMeasurement, 1600);
+  scheduleEmbedMeasurement(true);
+  window.setTimeout(() => scheduleSettledEmbedMeasurement(true), 500);
+  window.setTimeout(() => scheduleSettledEmbedMeasurement(true), 1600);
 }

@@ -652,12 +652,10 @@ function buildGrass(force = false) {
   grass.replaceChildren(fragment);
 }
 
-let grassResizeFrame = 0;
-window.addEventListener("resize", () => {
-  cancelAnimationFrame(grassResizeFrame);
-  grassResizeFrame = requestAnimationFrame(() => buildGrass(false));
-}, { passive: true });
-
+/*
+ * Build once. Parent iframe height changes must never rebuild the footer scene:
+ * on some browsers that fed back into scroll anchoring at the document end.
+ */
 buildGrass(true);
 selectFormat("solo");
 showReview(0);
@@ -676,93 +674,75 @@ if (isEmbedded) {
   let embedSettleTimer = 0;
   let lastEmbedHeight = 0;
   let lastEmbedWidth = Math.round(document.documentElement.clientWidth);
+  let initialSizingOpen = true;
 
   function stableDocumentEnd() {
     const endMarker = document.querySelector("#procedural-grass");
-    if (endMarker) {
-      return Math.ceil(endMarker.offsetTop + endMarker.offsetHeight);
-    }
+    if (endMarker) return Math.ceil(endMarker.offsetTop + endMarker.offsetHeight);
 
     const site = document.querySelector(".site");
-    if (site) {
-      return Math.ceil(site.offsetTop + site.offsetHeight);
-    }
+    if (site) return Math.ceil(site.offsetTop + site.offsetHeight);
 
     return Math.ceil(document.body ? document.body.scrollHeight : 0);
   }
 
-  function measureEmbedHeight(force = false) {
+  function postStableEmbedHeight(force = false) {
     embedResizeFrame = 0;
-
     const width = Math.round(document.documentElement.clientWidth);
-    if (Math.abs(width - lastEmbedWidth) > 1) {
+    const widthChanged = Math.abs(width - lastEmbedWidth) > 1;
+
+    /*
+     * Ordinary scrolling, late GIF decoding and footer animation are not
+     * allowed to resize the iframe. Only the initial settling window, a real
+     * width/orientation change or a user-opened FAQ may update its height.
+     */
+    if (!force && !initialSizingOpen && !widthChanged) return;
+    if (widthChanged) {
       lastEmbedWidth = width;
       lastEmbedHeight = 0;
     }
 
     const height = stableDocumentEnd();
-    if (height < 1) return;
-    if (!force && lastEmbedHeight && Math.abs(height - lastEmbedHeight) < 4) return;
+    if (height < 1 || (!force && height === lastEmbedHeight)) return;
 
     lastEmbedHeight = height;
     window.parent.postMessage(
-      {
-        source: embedMessageSource,
-        type: "resize",
-        height
-      },
+      { source: embedMessageSource, type: "resize", height },
       "*"
     );
   }
 
-  function scheduleEmbedMeasurement(force = false) {
-    cancelAnimationFrame(embedResizeFrame);
-    embedResizeFrame = requestAnimationFrame(() => measureEmbedHeight(force));
-  }
-
-  function scheduleSettledEmbedMeasurement(force = false) {
+  function scheduleStableEmbedHeight(force = false, delay = 120) {
     window.clearTimeout(embedSettleTimer);
-    embedSettleTimer = window.setTimeout(
-      () => scheduleEmbedMeasurement(force),
-      120
-    );
+    cancelAnimationFrame(embedResizeFrame);
+    embedSettleTimer = window.setTimeout(() => {
+      embedResizeFrame = requestAnimationFrame(() => postStableEmbedHeight(force));
+    }, delay);
   }
 
-  window.addEventListener("load", () => scheduleSettledEmbedMeasurement(true));
+  window.addEventListener("load", () => scheduleStableEmbedHeight(true, 40));
+
   window.addEventListener("resize", () => {
     const width = Math.round(document.documentElement.clientWidth);
     if (Math.abs(width - lastEmbedWidth) > 1) {
-      scheduleSettledEmbedMeasurement(true);
+      scheduleStableEmbedHeight(true, 180);
     }
   }, { passive: true });
 
-  window.addEventListener("message", (event) => {
-    if (
-      event.source === window.parent &&
-      event.data &&
-      event.data.source === "tilda-kl" &&
-      event.data.type === "request-size"
-    ) {
-      scheduleSettledEmbedMeasurement(true);
+  document.addEventListener("toggle", (event) => {
+    if (event.target instanceof HTMLDetailsElement) {
+      scheduleStableEmbedHeight(true, 80);
     }
-  });
-
-  document.addEventListener("toggle", () => {
-    scheduleSettledEmbedMeasurement(false);
   }, true);
 
-  document.querySelectorAll("img").forEach((image) => {
-    if (!image.complete) {
-      image.addEventListener("load", () => scheduleSettledEmbedMeasurement(false), { once: true });
-      image.addEventListener("error", () => scheduleSettledEmbedMeasurement(false), { once: true });
-    }
-  });
-
   if (document.fonts && document.fonts.ready) {
-    document.fonts.ready.then(() => scheduleSettledEmbedMeasurement(true));
+    document.fonts.ready.then(() => scheduleStableEmbedHeight(true, 40));
   }
 
-  scheduleEmbedMeasurement(true);
-  window.setTimeout(() => scheduleSettledEmbedMeasurement(true), 500);
-  window.setTimeout(() => scheduleSettledEmbedMeasurement(true), 1600);
+  postStableEmbedHeight(true);
+  window.setTimeout(() => postStableEmbedHeight(true), 500);
+  window.setTimeout(() => {
+    postStableEmbedHeight(true);
+    initialSizingOpen = false;
+  }, 1800);
 }

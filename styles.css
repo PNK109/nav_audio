@@ -3319,3 +3319,26 @@ html.is-embedded .cursor-trail {
     font-size: 8px;
   }
 }
+
+
+/* Preserve the avatar's original colour over the red panel by reinforcing its own pixels. */
+.final-section::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  right: -135px;
+  bottom: 0;
+  width: 620px;
+  aspect-ratio: 900 / 555;
+  background: url("assets/psx/egor-win95-avatar.png") center bottom / contain no-repeat;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+@media (max-width: 680px) {
+  .final-section::before {
+    right: 50%;
+    width: min(560px, 154vw);
+    transform: translateX(55%);
+  }
+}

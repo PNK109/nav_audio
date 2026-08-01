@@ -3342,3 +3342,25 @@ html.is-embedded .cursor-trail {
     transform: translateX(55%);
   }
 }
+
+
+/* Keep the visible avatar above the red wash; match the original first-image selector specificity. */
+.final-section > img.final-avatar:first-of-type {
+  z-index: 2;
+  right: -135px;
+  bottom: 0;
+  width: 620px;
+  opacity: 1;
+  filter: none;
+  mix-blend-mode: normal;
+}
+
+@media (max-width: 680px) {
+  .final-section > img.final-avatar:first-of-type {
+    right: 50%;
+    bottom: 0;
+    width: min(560px, 154vw);
+    transform: translateX(55%);
+    opacity: 1;
+  }
+}

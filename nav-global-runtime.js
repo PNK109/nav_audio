@@ -424,7 +424,7 @@
       '#rec969552191 .t450__logoimg {',
       '  box-shadow: none !important;',
       '  filter: none !important;',
-      '  mix-blend-mode: screen;',
+      '  mix-blend-mode: normal;',
       '  background: transparent !important;',
       '}',
       '#rec969552191 .nav-menu-dust {',

@@ -393,6 +393,114 @@
     }
   }
 
+  function injectMenuEnhancements() {
+    if (document.getElementById('nav-menu-enhancement-styles')) return;
+
+    var styles = document.createElement('style');
+    styles.id = 'nav-menu-enhancement-styles';
+    styles.textContent = [
+      '#rec969552191 .t450 { isolation: isolate; }',
+      '#rec969552191 .t450__container,',
+      '#rec969552191 .t450__rightside {',
+      '  position: relative;',
+      '  z-index: 2;',
+      '}',
+      '#rec969552191 .t450__menu .t-menu__link-item {',
+      '  color: #fff !important;',
+      '  text-shadow: 1px 1px 0 #000, 0 2px 3px rgba(0, 0, 0, .55);',
+      '  transition: none !important;',
+      '}',
+      '@media (hover: hover) {',
+      '  #rec969552191 .t450__menu .t-menu__link-item:hover,',
+      '  #rec969552191 .t450__menu .t-menu__link-item.t-active:hover {',
+      '    color: #000 !important;',
+      '    text-shadow: 1px 1px 0 #fff, 0 2px 3px rgba(255, 255, 255, .72);',
+      '  }',
+      '}',
+      '#rec969552191 .t450__menu .t-menu__link-item:focus-visible {',
+      '  color: #000 !important;',
+      '  text-shadow: 1px 1px 0 #fff, 0 2px 3px rgba(255, 255, 255, .72);',
+      '}',
+      '#rec969552191 .nav-menu-grass {',
+      '  position: absolute;',
+      '  z-index: 1;',
+      '  left: 0;',
+      '  right: 0;',
+      '  bottom: 0;',
+      '  width: 100%;',
+      '  height: 112px;',
+      '  overflow: hidden;',
+      '  pointer-events: none;',
+      '  contain: strict;',
+      '  transform: translateZ(0);',
+      '}',
+      '#rec969552191 .nav-menu-grass__blade {',
+      '  position: absolute;',
+      '  bottom: -2px;',
+      '  left: var(--grass-x);',
+      '  width: var(--grass-width);',
+      '  height: var(--grass-height);',
+      '  border-radius: 80% 20% 0 0;',
+      '  background: var(--grass-color);',
+      '  clip-path: polygon(48% 0, 100% 100%, 0 100%);',
+      '  filter: drop-shadow(1px 0 rgba(18, 74, 24, .42));',
+      '  transform: rotate(var(--grass-angle));',
+      '  transform-origin: 50% 100%;',
+      '  backface-visibility: hidden;',
+      '  animation: nav-menu-grass-sway var(--grass-speed) steps(2, end) var(--grass-delay) infinite;',
+      '}',
+      '#rec969552191 .nav-menu-grass__blade:nth-child(3n) { z-index: 2; }',
+      '@keyframes nav-menu-grass-sway {',
+      '  50% { transform: rotate(calc(var(--grass-angle) + 8deg)); }',
+      '}',
+      '@media (max-width: 640px) {',
+      '  #rec969552191 .nav-menu-grass { height: 92px; }',
+      '}',
+      '@media (prefers-reduced-motion: reduce) {',
+      '  #rec969552191 .nav-menu-grass__blade { animation: none; }',
+      '}'
+    ].join('\n');
+    document.head.appendChild(styles);
+  }
+
+  function initMenuGrass() {
+    var menuPanel = document.querySelector('#rec969552191 .t450');
+    if (!menuPanel || menuPanel.querySelector('.nav-menu-grass')) return;
+
+    var grass = document.createElement('div');
+    grass.className = 'nav-menu-grass';
+    grass.setAttribute('aria-hidden', 'true');
+
+    var bladeCount = 42;
+    var seed = 109;
+    var colors = ['#2f7429', '#3f842f', '#4f9c35', '#68ad3d', '#82bd43'];
+    var fragment = document.createDocumentFragment();
+
+    function random() {
+      seed = (seed * 1664525 + 1013904223) >>> 0;
+      return seed / 4294967296;
+    }
+
+    for (var index = 0; index < bladeCount; index++) {
+      var blade = document.createElement('i');
+      var spread = ((index + random() * 0.9) / bladeCount) * 100;
+      var angle = -7 + random() * 14;
+
+      blade.className = 'nav-menu-grass__blade';
+      blade.style.setProperty('--grass-x', spread.toFixed(2) + '%');
+      blade.style.setProperty('--grass-height', Math.round(30 + random() * 70) + 'px');
+      blade.style.setProperty('--grass-width', Math.round(3 + random() * 4) + 'px');
+      blade.style.setProperty('--grass-angle', angle.toFixed(1) + 'deg');
+      blade.style.setProperty('--grass-speed', (0.72 + random() * 1.05).toFixed(2) + 's');
+      blade.style.setProperty('--grass-delay', (-random() * 1.8).toFixed(2) + 's');
+      blade.style.setProperty('--grass-color', colors[Math.floor(random() * colors.length)]);
+      fragment.appendChild(blade);
+    }
+
+    grass.appendChild(fragment);
+    menuPanel.appendChild(grass);
+  }
+
   function initPersistentAudio() {
     if (document.getElementById('nav-global-audio')) return;
 
@@ -552,7 +660,14 @@
       state.currentTime = target;
       pendingSeek = null;
       writeState(shouldPlay, false);
-      if (shouldPlay) attemptPlay(announce);
+      if (shouldPlay) {
+        if (audio.paused) attemptPlay(announce);
+        else {
+          resumeWanted = false;
+          state.isPlaying = true;
+          setUi(true);
+        }
+      }
     }
 
     function loadTrack(index, time, shouldPlay, announce, fromGesture) {
@@ -572,10 +687,17 @@
       }
       writeState(Boolean(shouldPlay), true);
 
+      /*
+       * Ask the browser to start while the navigation/user activation window
+       * is still open. Waiting for loadedmetadata made uncached tracks 2-6
+       * lose that window, even though track 1 usually resumed from cache.
+       * The exact seek is applied as soon as metadata becomes available.
+       */
+      if (shouldPlay) attemptPlay(announce);
+
       if (fromGesture && pendingSeek === 0) {
         pendingSeek = null;
         try { audio.currentTime = 0; } catch (error) {}
-        if (shouldPlay) attemptPlay(announce);
         return;
       }
 
@@ -630,7 +752,6 @@
       }
     });
     audio.addEventListener('play', function () {
-      pendingSeek = null;
       setUi(true);
     });
     audio.addEventListener('pause', function () {
@@ -647,13 +768,25 @@
       writeState(false, pendingSeek !== null);
     });
 
-    document.addEventListener('click', function (event) {
-      var target = event.target && event.target.closest
+    function findAudioControl(event) {
+      return event.target && event.target.closest
         ? event.target.closest(
           '.tc-play,.tc-play2,.tc-play3,.tc-play4,.tc-play5,.tc-play6,' +
           '.tc-stop,.tc-stop2,.tc-stop3,.tc-stop4,.tc-stop5,.tc-stop6,#toggle-loop'
         )
         : null;
+    }
+
+    function resumeOnGesture(event) {
+      if (resumeWanted && !findAudioControl(event)) playCurrent(false, true);
+    }
+
+    document.addEventListener('pointerdown', resumeOnGesture, true);
+    document.addEventListener('touchstart', resumeOnGesture, {capture:true, passive:true});
+    document.addEventListener('keydown', resumeOnGesture, true);
+
+    document.addEventListener('click', function (event) {
+      var target = findAudioControl(event);
       if (target) {
         event.preventDefault();
         event.stopImmediatePropagation();
@@ -732,10 +865,13 @@
 
   function initRuntime() {
     injectOptimizedEffectStyles();
+    injectMenuEnhancements();
     initOptimizedDust();
     initOptimizedGrain();
+    initMenuGrass();
     restoreNativeMacScroll();
     initPersistentAudio();
+    window.setTimeout(initMenuGrass, 500);
     window.setTimeout(restoreNativeMacScroll, 250);
   }
 

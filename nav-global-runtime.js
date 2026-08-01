@@ -882,3 +882,21 @@
   }
   window.addEventListener('load', restoreNativeMacScroll, {once:true});
 })();
+
+
+/* nav-zero-form-submit-fix */
+(function () {
+  if (window.__navZeroFormSubmitFix) return;
+  window.__navZeroFormSubmitFix = true;
+  document.addEventListener('click', function (event) {
+    var link = event.target && event.target.closest
+      ? event.target.closest('a[href="#sendzeroform"]')
+      : null;
+    if (!link) return;
+    event.preventDefault();
+    var record = link.closest('div[data-record-type="396"]');
+    var form = record ? record.querySelector('form') : null;
+    var submit = form ? form.querySelector('.t-submit') : null;
+    if (submit) submit.click();
+  });
+})();

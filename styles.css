@@ -3364,3 +3364,21 @@ html.is-embedded .cursor-trail {
     opacity: 1;
   }
 }
+
+
+/* Final desktop balance: keep the restored avatar clear of the text column. */
+@media (min-width: 681px) {
+  .final-section {
+    padding-right: 230px;
+  }
+
+  .final-section > img.final-avatar:first-of-type,
+  .final-section::before {
+    right: -205px;
+    width: 590px;
+  }
+
+  .final-section .final-copy {
+    max-width: 32ch;
+  }
+}

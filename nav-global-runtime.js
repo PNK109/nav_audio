@@ -407,73 +407,74 @@
       '}',
       '#rec969552191 .t450__menu .t-menu__link-item {',
       '  color: #fff !important;',
-      '  text-shadow: 1px 1px 0 #000, 0 2px 3px rgba(0, 0, 0, .55);',
+      '  text-shadow: none !important;',
       '  transition: none !important;',
       '}',
       '@media (hover: hover) {',
       '  #rec969552191 .t450__menu .t-menu__link-item:hover,',
       '  #rec969552191 .t450__menu .t-menu__link-item.t-active:hover {',
       '    color: #000 !important;',
-      '    text-shadow: 1px 1px 0 #fff, 0 2px 3px rgba(255, 255, 255, .72);',
+      '    text-shadow: none !important;',
       '  }',
       '}',
       '#rec969552191 .t450__menu .t-menu__link-item:focus-visible {',
       '  color: #000 !important;',
-      '  text-shadow: 1px 1px 0 #fff, 0 2px 3px rgba(255, 255, 255, .72);',
+      '  text-shadow: none !important;',
       '}',
-      '#rec969552191 .nav-menu-grass {',
+      '#rec969552191 .t450__logoimg {',
+      '  box-shadow: none !important;',
+      '  filter: none !important;',
+      '  mix-blend-mode: screen;',
+      '  background: transparent !important;',
+      '}',
+      '#rec969552191 .nav-menu-dust {',
       '  position: absolute;',
       '  z-index: 1;',
-      '  left: 0;',
-      '  right: 0;',
-      '  bottom: 0;',
-      '  width: 100%;',
-      '  height: 112px;',
+      '  inset: 0;',
       '  overflow: hidden;',
       '  pointer-events: none;',
       '  contain: strict;',
       '  transform: translateZ(0);',
       '}',
-      '#rec969552191 .nav-menu-grass__blade {',
+      '#rec969552191 .nav-menu-dust__particle {',
       '  position: absolute;',
-      '  bottom: -2px;',
-      '  left: var(--grass-x);',
-      '  width: var(--grass-width);',
-      '  height: var(--grass-height);',
-      '  border-radius: 80% 20% 0 0;',
-      '  background: var(--grass-color);',
-      '  clip-path: polygon(48% 0, 100% 100%, 0 100%);',
-      '  filter: drop-shadow(1px 0 rgba(18, 74, 24, .42));',
-      '  transform: rotate(var(--grass-angle));',
-      '  transform-origin: 50% 100%;',
+      '  left: var(--dust-x);',
+      '  top: var(--dust-y);',
+      '  width: var(--dust-size);',
+      '  height: var(--dust-size);',
+      '  border-radius: 50%;',
+      '  background: radial-gradient(circle, rgba(255,255,255,.94) 0, rgba(255,252,238,.38) 34%, rgba(255,255,255,0) 74%);',
+      '  opacity: var(--dust-opacity);',
+      '  transform: translate3d(0, 12px, 0) scale(.72);',
       '  backface-visibility: hidden;',
-      '  animation: nav-menu-grass-sway var(--grass-speed) steps(2, end) var(--grass-delay) infinite;',
+      '  animation: nav-menu-dust-rise var(--dust-speed) ease-in-out var(--dust-delay) infinite;',
       '}',
-      '#rec969552191 .nav-menu-grass__blade:nth-child(3n) { z-index: 2; }',
-      '@keyframes nav-menu-grass-sway {',
-      '  50% { transform: rotate(calc(var(--grass-angle) + 8deg)); }',
-      '}',
-      '@media (max-width: 640px) {',
-      '  #rec969552191 .nav-menu-grass { height: 92px; }',
+      '@keyframes nav-menu-dust-rise {',
+      '  0%   { transform: translate3d(0, 14px, 0) scale(.68); opacity: 0; }',
+      '  18%  { opacity: var(--dust-opacity); }',
+      '  55%  { transform: translate3d(var(--dust-drift), -22px, 0) scale(1); opacity: calc(var(--dust-opacity) * .82); }',
+      '  100% { transform: translate3d(calc(var(--dust-drift) * -.35), -58px, 0) scale(.76); opacity: 0; }',
       '}',
       '@media (prefers-reduced-motion: reduce) {',
-      '  #rec969552191 .nav-menu-grass__blade { animation: none; }',
+      '  #rec969552191 .nav-menu-dust__particle { animation: none; }',
       '}'
     ].join('\n');
     document.head.appendChild(styles);
   }
 
-  function initMenuGrass() {
+  function initMenuDust() {
     var menuPanel = document.querySelector('#rec969552191 .t450');
-    if (!menuPanel || menuPanel.querySelector('.nav-menu-grass')) return;
+    if (!menuPanel || menuPanel.querySelector('.nav-menu-dust')) return;
 
-    var grass = document.createElement('div');
-    grass.className = 'nav-menu-grass';
-    grass.setAttribute('aria-hidden', 'true');
+    var legacyGrass = menuPanel.querySelector('.nav-menu-grass');
+    if (legacyGrass) legacyGrass.remove();
 
-    var bladeCount = 42;
+    var dust = document.createElement('div');
+    dust.className = 'nav-menu-dust';
+    dust.setAttribute('aria-hidden', 'true');
+
+    var particleCount = window.innerWidth <= 640 ? 24 : 34;
     var seed = 109;
-    var colors = ['#2f7429', '#3f842f', '#4f9c35', '#68ad3d', '#82bd43'];
     var fragment = document.createDocumentFragment();
 
     function random() {
@@ -481,24 +482,21 @@
       return seed / 4294967296;
     }
 
-    for (var index = 0; index < bladeCount; index++) {
-      var blade = document.createElement('i');
-      var spread = ((index + random() * 0.9) / bladeCount) * 100;
-      var angle = -7 + random() * 14;
-
-      blade.className = 'nav-menu-grass__blade';
-      blade.style.setProperty('--grass-x', spread.toFixed(2) + '%');
-      blade.style.setProperty('--grass-height', Math.round(30 + random() * 70) + 'px');
-      blade.style.setProperty('--grass-width', Math.round(3 + random() * 4) + 'px');
-      blade.style.setProperty('--grass-angle', angle.toFixed(1) + 'deg');
-      blade.style.setProperty('--grass-speed', (0.72 + random() * 1.05).toFixed(2) + 's');
-      blade.style.setProperty('--grass-delay', (-random() * 1.8).toFixed(2) + 's');
-      blade.style.setProperty('--grass-color', colors[Math.floor(random() * colors.length)]);
-      fragment.appendChild(blade);
+    for (var index = 0; index < particleCount; index++) {
+      var particle = document.createElement('i');
+      particle.className = 'nav-menu-dust__particle';
+      particle.style.setProperty('--dust-x', (3 + random() * 94).toFixed(2) + '%');
+      particle.style.setProperty('--dust-y', (8 + random() * 88).toFixed(2) + '%');
+      particle.style.setProperty('--dust-size', (3 + random() * 8).toFixed(1) + 'px');
+      particle.style.setProperty('--dust-opacity', (0.24 + random() * 0.48).toFixed(2));
+      particle.style.setProperty('--dust-drift', (-18 + random() * 36).toFixed(1) + 'px');
+      particle.style.setProperty('--dust-speed', (6.5 + random() * 8).toFixed(2) + 's');
+      particle.style.setProperty('--dust-delay', (-random() * 13).toFixed(2) + 's');
+      fragment.appendChild(particle);
     }
 
-    grass.appendChild(fragment);
-    menuPanel.appendChild(grass);
+    dust.appendChild(fragment);
+    menuPanel.appendChild(dust);
   }
 
   function initPersistentAudio() {
@@ -868,10 +866,10 @@
     injectMenuEnhancements();
     initOptimizedDust();
     initOptimizedGrain();
-    initMenuGrass();
+    initMenuDust();
     restoreNativeMacScroll();
     initPersistentAudio();
-    window.setTimeout(initMenuGrass, 500);
+    window.setTimeout(initMenuDust, 500);
     window.setTimeout(restoreNativeMacScroll, 250);
   }
 

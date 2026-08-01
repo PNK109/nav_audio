@@ -1,5 +1,70 @@
 const isEmbedded = window.parent !== window;
 
+
+
+const localAnchorLinks = document.querySelectorAll('a[href^="#"]');
+
+function sendAnchorTargetToParent(target) {
+  const top = Math.max(
+    0,
+    Math.round(target.getBoundingClientRect().top + window.scrollY)
+  );
+
+  window.parent.postMessage(
+    {
+      source: "pankovskii-kl",
+      type: "scroll-to",
+      top
+    },
+    "*"
+  );
+}
+
+localAnchorLinks.forEach((anchor) => {
+  anchor.addEventListener("click", (event) => {
+    const href = anchor.getAttribute("href");
+    if (!href || href === "#") return;
+
+    const target = document.getElementById(decodeURIComponent(href.slice(1)));
+    if (!target) return;
+
+    event.preventDefault();
+
+    if (isEmbedded) {
+      sendAnchorTargetToParent(target);
+      return;
+    }
+
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
+    window.history.replaceState(null, "", href);
+  });
+});
+
+const floatingSidebar = document.querySelector(".sidebar");
+const floatingSidebarLayout = document.querySelector(".frame-layout");
+
+function syncFloatingSidebar(viewport) {
+  if (
+    !floatingSidebar ||
+    !floatingSidebarLayout ||
+    !window.matchMedia("(min-width: 1180px)").matches
+  ) {
+    return;
+  }
+
+  const viewportTop = Number(viewport.top);
+  if (!Number.isFinite(viewportTop)) return;
+
+  const desiredShift = viewportTop + 20 - floatingSidebarLayout.offsetTop;
+  const maximumShift = Math.max(
+    0,
+    floatingSidebarLayout.offsetHeight - floatingSidebar.offsetHeight - 24
+  );
+  const shift = Math.min(maximumShift, Math.max(0, desiredShift));
+
+  floatingSidebar.style.setProperty("--sidebar-shift", `${Math.round(shift)}px`);
+}
+
 const diagnostics = {
   voice: {
     archetype: "СОБИРАТЕЛЬ",
@@ -595,6 +660,7 @@ if (isEmbedded) {
     ) {
       scheduleEmbeddedMotionViewport(data);
       syncEmbeddedTrailViewport(data);
+      syncFloatingSidebar(data);
     }
   });
 } else if ("IntersectionObserver" in window) {

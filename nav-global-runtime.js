@@ -18,6 +18,39 @@
     }
   }
 
+  /*
+   * Keep Tilda's document canvas edge-to-edge. A malformed project-level CSS
+   * rule briefly attached the menu's 30px inner padding to html/body, which
+   * shrank every page and exposed the black body background at both sides.
+   * This narrowly resets only the outer document and the records root.
+   */
+  function injectLayoutSafetyStyles() {
+    if (document.getElementById('nav-layout-safety-styles')) return;
+
+    var styles = document.createElement('style');
+    styles.id = 'nav-layout-safety-styles';
+    styles.textContent = [
+      'html,',
+      'body.t-body {',
+      '  width: 100% !important;',
+      '  max-width: none !important;',
+      '  margin-left: 0 !important;',
+      '  margin-right: 0 !important;',
+      '  padding-left: 0 !important;',
+      '  padding-right: 0 !important;',
+      '}',
+      'body.t-body > #allrecords {',
+      '  width: 100% !important;',
+      '  max-width: none !important;',
+      '  margin-left: 0 !important;',
+      '  margin-right: 0 !important;',
+      '}'
+    ].join('\n');
+    document.head.appendChild(styles);
+  }
+
+  injectLayoutSafetyStyles();
+
   function injectOptimizedEffectStyles() {
     if (document.getElementById('nav-fx-optimized-styles')) return;
 
@@ -432,10 +465,22 @@
       '  padding-left: 30px !important;',
       '  padding-right: 30px !important;',
       '}',
+      '#rec969552191 .t450__top {',
+      '  display: flex !important;',
+      '  flex-direction: column;',
+      '  align-items: center;',
+      '}',
+      '#rec969552191 .t450__logowrapper {',
+      '  width: 120px !important;',
+      '  max-width: 120px !important;',
+      '  margin: 0 0 42px !important;',
+      '  overflow: visible !important;',
+      '  text-align: center;',
+      '}',
       '#rec969552191 .t450__logoimg {',
       '  display: block !important;',
-      '  width: 120px !important;',
-      '  max-width: none !important;',
+      '  width: 100px !important;',
+      '  max-width: 100px !important;',
       '  height: auto !important;',
       '  margin-right: auto !important;',
       '  margin-left: auto !important;',
@@ -445,19 +490,15 @@
       '}',
       '#rec969552191 .t450__menu {',
       '  width: 120px !important;',
-      '  margin-top: 30px !important;',
+      '  margin-top: 0 !important;',
       '}',
       '@media (max-width: 640px) {',
       '  #rec969552191 .t450__container {',
       '    padding-right: 32px !important;',
       '    padding-left: 32px !important;',
       '  }',
-      '  #rec969552191 .t450__logoimg {',
-      '    width: 120px !important;',
-      '  }',
-      '  #rec969552191 .t450__menu {',
-      '    margin-top: 34px !important;',
-      '  }',
+      '  #rec969552191 .t450__logowrapper { margin-bottom: 46px !important; }',
+      '  #rec969552191 .t450__logoimg { width: 100px !important; max-width: 100px !important; }',
       '}',
       '#rec969552191 .nav-menu-dust {',
       '  position: absolute;',
@@ -526,6 +567,17 @@
         '  color: #0b1822 !important;',
         '  text-shadow: none !important;',
         '}',
+        '.t706__cartwin-content .t706__auth *,',
+        '.t706__cartwin-content .t-input-title,',
+        '.t706__cartwin-content .t-input-subtitle,',
+        '.t706__cartwin-content .t-input-error,',
+        '.t706__cartwin-content .t-form__errorbox-item,',
+        '.t706__cartwin-content .t-form__errorbox-middle,',
+        '.t706__cartwin-content .t-input-phonemask__select-code,',
+        '.t706__cartwin-content .t706__cartwin-totalamount-info {',
+        '  color: #0b1822 !important;',
+        '  text-shadow: none !important;',
+        '}',
         '.t706__product-title a {',
         '  font-weight: 600 !important;',
         '  text-decoration-color: rgba(11, 24, 34, .35) !important;',
@@ -575,11 +627,28 @@
         '  color: #0a3f5f !important;',
         '  text-decoration: underline;',
         '}',
+        '.t706__orderform .t-submit {',
+        '  color: #8d0015 !important;',
+        '  background: #fff239 !important;',
+        '  border: 2px solid #8d0015 !important;',
+        '  box-shadow: 5px 5px 0 rgba(141, 0, 21, .28) !important;',
+        '  font-weight: 700 !important;',
+        '  opacity: 1 !important;',
+        '  filter: none !important;',
+        '}',
+        '.t706__orderform .t-submit *,',
+        '.t706__orderform .t-submit .t-btnflex__text {',
+        '  color: inherit !important;',
+        '}',
         '.t706__orderform .t-submit:disabled,',
         '.t706__orderform .t-submit[aria-disabled="true"] {',
         '  cursor: not-allowed !important;',
-        '  opacity: .46 !important;',
-        '  filter: grayscale(.45);',
+        '  color: #9a4150 !important;',
+        '  background: #ffe788 !important;',
+        '  border-color: #b45566 !important;',
+        '  box-shadow: 3px 3px 0 rgba(141, 0, 21, .18) !important;',
+        '  opacity: .82 !important;',
+        '  filter: none !important;',
         '  transform: none !important;',
         '}',
         '.nav-cart-alt-payment {',
@@ -588,6 +657,29 @@
         '}',
         '.nav-cart-alt-payment a {',
         '  color: #0a3f5f !important;',
+        '}',
+        '.nav-cart-alt-payment-button {',
+        '  display: flex !important;',
+        '  align-items: center;',
+        '  justify-content: center;',
+        '  min-height: 46px;',
+        '  margin-top: 12px;',
+        '  padding: 10px 16px;',
+        '  box-sizing: border-box;',
+        '  color: #fff !important;',
+        '  background: #0b2d46;',
+        '  border: 2px solid #071b2a;',
+        '  box-shadow: 4px 4px 0 rgba(7, 27, 42, .24);',
+        '  font-weight: 700;',
+        '  letter-spacing: .025em;',
+        '  text-decoration: none !important;',
+        '}',
+        '.nav-cart-alt-payment-button:hover,',
+        '.nav-cart-alt-payment-button:focus-visible {',
+        '  color: #8d0015 !important;',
+        '  background: #fff239;',
+        '  outline: 2px solid #8d0015;',
+        '  outline-offset: 2px;',
         '}',
         '@media (max-width: 680px) {',
         '  .t706__cartwin-content {',
@@ -674,7 +766,13 @@
         var bottomText = bottomTexts[textIndex];
         if (bottomText.dataset.navCleaned === 'true') continue;
         bottomText.classList.add('nav-cart-alt-payment');
-        bottomText.innerHTML = 'Для пользователей из-за рубежа доступны <a href="/alternative">PayPal и USDT</a>.';
+        bottomText.textContent = 'Для пользователей из-за рубежа доступны альтернативные методы оплаты.';
+
+        var alternativeButton = document.createElement('a');
+        alternativeButton.className = 'nav-cart-alt-payment-button';
+        alternativeButton.href = '/alternative';
+        alternativeButton.textContent = 'ВЫБРАТЬ PAYPAL / USDT';
+        bottomText.appendChild(alternativeButton);
         bottomText.dataset.navCleaned = 'true';
       }
     }

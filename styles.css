@@ -3382,3 +3382,43 @@ html.is-embedded .cursor-trail {
     max-width: 32ch;
   }
 }
+
+
+/* 2026-08-02: breathing room and a visible base for the procedural grass. */
+.procedural-grass {
+  height: 126px;
+  margin-top: 72px;
+  overflow: hidden;
+}
+
+.grass-blade {
+  bottom: 13px;
+}
+
+.procedural-grass::after {
+  content: "";
+  position: absolute;
+  z-index: 4;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 15px;
+  background:
+    linear-gradient(180deg, rgba(124, 193, 76, 0.98) 0 24%, rgba(69, 139, 49, 0.98) 25% 58%, rgba(35, 94, 38, 0.98) 59% 100%);
+  box-shadow: 0 -2px 0 rgba(196, 232, 132, 0.72);
+}
+
+@media (max-width: 680px) {
+  .procedural-grass {
+    height: 112px;
+    margin-top: 50px;
+  }
+
+  .grass-blade {
+    bottom: 11px;
+  }
+
+  .procedural-grass::after {
+    height: 13px;
+  }
+}

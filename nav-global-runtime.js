@@ -18,39 +18,6 @@
     }
   }
 
-  /*
-   * Keep Tilda's document canvas edge-to-edge. A malformed project-level CSS
-   * rule briefly attached the menu's 30px inner padding to html/body, which
-   * shrank every page and exposed the black body background at both sides.
-   * This narrowly resets only the outer document and the records root.
-   */
-  function injectLayoutSafetyStyles() {
-    if (document.getElementById('nav-layout-safety-styles')) return;
-
-    var styles = document.createElement('style');
-    styles.id = 'nav-layout-safety-styles';
-    styles.textContent = [
-      'html,',
-      'body.t-body {',
-      '  width: 100% !important;',
-      '  max-width: none !important;',
-      '  margin-left: 0 !important;',
-      '  margin-right: 0 !important;',
-      '  padding-left: 0 !important;',
-      '  padding-right: 0 !important;',
-      '}',
-      'body.t-body > #allrecords {',
-      '  width: 100% !important;',
-      '  max-width: none !important;',
-      '  margin-left: 0 !important;',
-      '  margin-right: 0 !important;',
-      '}'
-    ].join('\n');
-    document.head.appendChild(styles);
-  }
-
-  injectLayoutSafetyStyles();
-
   function injectOptimizedEffectStyles() {
     if (document.getElementById('nav-fx-optimized-styles')) return;
 
@@ -438,68 +405,6 @@
       '  position: relative;',
       '  z-index: 2;',
       '}',
-      '#rec969552191 .t450__menu .t-menu__link-item {',
-      '  color: #fff !important;',
-      '  text-shadow: none !important;',
-      '  transition: none !important;',
-      '}',
-      '@media (hover: hover) {',
-      '  #rec969552191 .t450__menu .t-menu__link-item:hover,',
-      '  #rec969552191 .t450__menu .t-menu__link-item.t-active:hover {',
-      '    color: #000 !important;',
-      '    text-shadow: none !important;',
-      '  }',
-      '}',
-      '#rec969552191 .t450__menu .t-menu__link-item:focus-visible {',
-      '  color: #000 !important;',
-      '  text-shadow: none !important;',
-      '}',
-      '#rec969552191 .t450__logoimg {',
-      '  box-shadow: none !important;',
-      '  filter: none !important;',
-      '  mix-blend-mode: normal;',
-      '  background: transparent !important;',
-      '}',
-      '#rec969552191 .t450__container {',
-      '  box-sizing: border-box;',
-      '  padding-left: 30px !important;',
-      '  padding-right: 30px !important;',
-      '}',
-      '#rec969552191 .t450__top {',
-      '  display: flex !important;',
-      '  flex-direction: column;',
-      '  align-items: center;',
-      '}',
-      '#rec969552191 .t450__logowrapper {',
-      '  width: 120px !important;',
-      '  max-width: 120px !important;',
-      '  margin: 0 0 42px !important;',
-      '  overflow: visible !important;',
-      '  text-align: center;',
-      '}',
-      '#rec969552191 .t450__logoimg {',
-      '  display: block !important;',
-      '  width: 100px !important;',
-      '  max-width: 100px !important;',
-      '  height: auto !important;',
-      '  margin-right: auto !important;',
-      '  margin-left: auto !important;',
-      '  object-fit: contain !important;',
-      '  object-position: center center !important;',
-      '  overflow: visible !important;',
-      '}',
-      '#rec969552191 .t450__menu {',
-      '  width: 120px !important;',
-      '  margin-top: 0 !important;',
-      '}',
-      '@media (max-width: 640px) {',
-      '  #rec969552191 .t450__container {',
-      '    padding-right: 32px !important;',
-      '    padding-left: 32px !important;',
-      '  }',
-      '  #rec969552191 .t450__logowrapper { margin-bottom: 46px !important; }',
-      '  #rec969552191 .t450__logoimg { width: 100px !important; max-width: 100px !important; }',
-      '}',
       '#rec969552191 .nav-menu-dust {',
       '  position: absolute;',
       '  z-index: 1;',
@@ -708,16 +613,6 @@
         '  .nav-offer-consent {',
         '    font-size: 13px;',
         '  }',
-        '  #nav-global-audio-player {',
-        '    left: 14px !important;',
-        '    bottom: 14px !important;',
-        '  }',
-        '  #nav-global-audio-player .nav-audio-toggle {',
-        '    width: 30px !important;',
-        '    height: 30px !important;',
-        '    line-height: 28px !important;',
-        '    opacity: .58 !important;',
-        '  }',
         '}'
       ].join('\n');
       document.head.appendChild(styles);
@@ -801,12 +696,6 @@
   function initMenuDust() {
     var menuPanel = document.querySelector('#rec969552191 .t450');
     if (!menuPanel) return;
-
-    var menuLogo = menuPanel.querySelector('.t450__logoimg');
-    if (menuLogo && menuLogo.src.indexOf('data:image/png;base64,') !== 0) {
-      menuLogo.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIEAAABtAQAAAACuXT8EAAAAAnRSTlMAAHaTzTgAAAACYktHRAAB3YoTpAAAAAlwSFlzAAAWJQAAFiUBSVIk8AAAAAd0SU1FB+oIAQwUFM6pRKwAAAFaelRYdFJhdyBwcm9maWxlIHR5cGUgeG1wAAAokYVTW3KDMAz81yl6BKOnOQ7F9l9n+tnjdwU0JCST4iGApNWu1g79fH3TR16qM8kaVZao3qJ4cwv1iUt+++o9JHPSmH1y9eHsJssev1UPZi50tkHwMyFWtVnhouIjAOQizl3KdrP0snDJBQmM5i6LsSqpX/j3ZGqooVhFFnCO2C7ugSLuG0XwkEnmXDxIijACjN+2N8FTYkZbyI7KLQkyfWq5KlJ1oxAXBOZttBkudCg8CuALgxtOpEIY8dDofkWlcyhYV9HqxVibpn7ajXf45w2ZA5OjTZuJ41n63wA3gsUKlFc3X23W1I99S5KchLxLh2Uu2CRZT473sEQ90tJb3vqqASgnuH8hpfegf4c11FqwCqVpB1yl276HdrSr2DO9cN+gj0i6ng0e96fj+XDcn+yz1pgU9Zncwk//uszQL2YA1jDGIlMVAAAC/UlEQVQ4y63VvW7bMBAAYBJEQxcwqoweDDBvEI8Copqv0TFAH6DuVCNQLbkq6tEvUMCv0LFbGHjomLEdippBhoxhkYVBZV2PpKTE1lAUiIHA0ufj8Ue6CyFP9pl2BMKXBCC8dFcUNBEAJgPIMy8MbCvghWO0DHIRRMCVSqYnOrN8rVOfccNUTJieEXajEj8VypQwtcXxn91KaAlMTRRTv1FyJ9xKpk5RjD4OEmnJlZ5c5xpuwdTClMrWc51dgvWjjGS5lsVcZTwIwzxzjCuUrIU6MQJFPJLCCrYwEQtCghQL+1gWpSyWNir2pBQoE3+oki3LrFjtCRSbUizAjmpZoUApl20MX22BoUQPo6B0IkQjDNcqnJy3gitzcTKrJaYMzBhlvCMzJ9tG8HxNiZLQehfxIeZxErcyYLC1KCOU2EkyxOd8j+LegCBjlDsnbQyeL1yj8Guw/rkneL5wgzsVaxTbxFy6veP5ZE6GcgGwdLtgjeBJwaoWqRvxO8VRM+KlgKoR0kg53hF3Nawl93lwhOlj1uMCzDcvY3zHeyj4TA0on4eCIUWQLPeCv9Mgtha8Ym5f+C3b2TtS8VqyRiBysuhIOwrXWolOZrkvto3pNVLnMV0RgyZPK719kfvykLnsrif6H+lmnnYk3p3r+lFM+Luw0u6OUv+WeZ52Bb7uCFXp+W5MrlLYFaXkXsyFeu8lcRUZrYPAjkR3Kts4Gfuq3UAV3eTZKlSBEwDLb8nJ6ofvuQwSFCxDvLZeaIVSvaBAxBsnM0GrYYQvFalI5DOfCZIOo/uS5b9Q3ImdyTzpc5NSVRL+3Y96p5IDphOqfe2ipK/V9IBh/7xqZMw0NhOUt76aXQ/38sWQE2zpf4xrtXw0oR8GExLj71snfHlo6KeBIUOUzAvg3ce+Jn2Ul66+WNXT5CcKR/G1TMvnmqTPNPZlnCYI1+QVV4RhDqF8Y8W7mClCUSIVml0Q0soE7w5p7oW7qiQjlgc5beTI3ZEgrJb6n90RTuyFNEJaeYrPXwUu8xgV1lx8AAAAKHRFWHRpY2M6Y29weXJpZ2h0AENvcHlyaWdodCBBcHBsZSBJbmMuLCAyMDI249l7hQAAABd0RVh0aWNjOmRlc2NyaXB0aW9uAERpc3BsYXkXG5W4AAAAF3RFWHR4bXA6UGl4ZWxYRGltZW5zaW9uADQxMq3jn2YAAAAYdEVYdHhtcDpQaXhlbFlEaW1lbnNpb24AMTY0NmT0xz8AAAAadEVYdHhtcDpVc2VyQ29tbWVudABTY3JlZW5zaG900+CyfAAAAABJRU5ErkJggg==';
-      menuLogo.removeAttribute('srcset');
-    }
 
     if (menuPanel.querySelector('.nav-menu-dust')) return;
 

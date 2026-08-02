@@ -2407,7 +2407,7 @@ a:focus-visible {
   position: relative;
   width: 100%;
   height: 98px;
-  margin-top: -1px;
+  margin-top: 64px;
   overflow: hidden;
   contain: layout paint;
   background: transparent;
@@ -3292,6 +3292,10 @@ html.is-embedded .cursor-trail {
 }
 
 @media (max-width: 680px) {
+  .procedural-grass {
+    margin-top: 46px;
+  }
+
   .final-section {
     min-height: 440px;
     padding: 42px 16px 178px;

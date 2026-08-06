@@ -4,22 +4,6 @@ const isEmbedded = window.parent !== window;
 
 const localAnchorLinks = document.querySelectorAll('a[href^="#"]');
 
-function sendAnchorTargetToParent(target) {
-  const top = Math.max(
-    0,
-    Math.round(target.getBoundingClientRect().top + window.scrollY)
-  );
-
-  window.parent.postMessage(
-    {
-      source: "pankovskii-kl",
-      type: "scroll-to",
-      top
-    },
-    "*"
-  );
-}
-
 localAnchorLinks.forEach((anchor) => {
   anchor.addEventListener("click", (event) => {
     const href = anchor.getAttribute("href");
@@ -29,11 +13,6 @@ localAnchorLinks.forEach((anchor) => {
     if (!target) return;
 
     event.preventDefault();
-
-    if (isEmbedded) {
-      sendAnchorTargetToParent(target);
-      return;
-    }
 
     target.scrollIntoView({ behavior: "smooth", block: "start" });
     window.history.replaceState(null, "", href);

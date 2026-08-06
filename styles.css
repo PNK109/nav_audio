@@ -53,11 +53,11 @@ body {
 }
 
 @media (pointer: fine) {
-  html,
-  body,
-  body *,
-  body *::before,
-  body *::after {
+  :is(html, #nav-cursor#nav-cursor#nav-cursor),
+  :is(html, #nav-cursor#nav-cursor#nav-cursor) body,
+  :is(html, #nav-cursor#nav-cursor#nav-cursor) body *,
+  :is(html, #nav-cursor#nav-cursor#nav-cursor) body *::before,
+  :is(html, #nav-cursor#nav-cursor#nav-cursor) body *::after {
     cursor: url("https://static.tildacdn.com/tild3661-6230-4636-b938-663264363538/__2.webp") 0 0, auto !important;
   }
 }

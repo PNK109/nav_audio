@@ -44,6 +44,23 @@ function syncFloatingSidebar(viewport) {
   floatingSidebar.style.setProperty("--sidebar-shift", `${Math.round(shift)}px`);
 }
 
+let floatingSidebarFrame = 0;
+
+function syncFloatingSidebarWithDocument() {
+  if (floatingSidebarFrame) return;
+
+  floatingSidebarFrame = window.requestAnimationFrame(() => {
+    floatingSidebarFrame = 0;
+    syncFloatingSidebar({ top: window.scrollY });
+  });
+}
+
+if (floatingSidebar && floatingSidebarLayout) {
+  window.addEventListener("scroll", syncFloatingSidebarWithDocument, { passive: true });
+  window.addEventListener("resize", syncFloatingSidebarWithDocument, { passive: true });
+  syncFloatingSidebarWithDocument();
+}
+
 const diagnostics = {
   voice: {
     archetype: "СОБИРАТЕЛЬ",

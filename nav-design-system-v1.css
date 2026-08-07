@@ -1,0 +1,342 @@
+/*
+ * NAV design system v1
+ * Scope: editable HTML text and interface controls only.
+ * Artwork, raster lettering and collage imagery are intentionally untouched.
+ */
+
+@font-face {
+  font-family: "RF Dewi";
+  src: url("./assets/fonts/RFDewi-Regular.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "RF Dewi";
+  src: url("./assets/fonts/RFDewi-Semibold.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "RF Dewi";
+  src: url("./assets/fonts/RFDewi-Bold.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
+:root {
+  --nav-font: "RF Dewi", Arial, sans-serif;
+  --nav-ink: #020202;
+  --nav-paper: #f4f4f4;
+  --nav-sky: #b9def4;
+  --nav-signal: #d60d3b;
+  --nav-control-radius: 4px;
+  --nav-focus: 0 0 0 2px var(--nav-signal);
+  --t-headline-font: var(--nav-font);
+  --t-text-font: var(--nav-font);
+}
+
+html,
+body,
+#allrecords,
+#allrecords .t-text,
+#allrecords .t-name,
+#allrecords .t-title,
+#allrecords .t-descr,
+#allrecords .t-btn,
+#allrecords .t-btnflex,
+#allrecords .t-submit,
+#allrecords .t-input,
+#allrecords .t-input__vis-ph,
+#allrecords .t-select,
+#allrecords .t-input-error,
+#allrecords .t-form__errorbox-wrapper,
+#allrecords .t-form__errorbox-text,
+#allrecords .t-form__errorbox-item,
+#allrecords .t-form__successbox,
+#allrecords .tn-elem[data-elem-type="text"] .tn-atom,
+#allrecords .tn-elem[data-elem-type="button"] .tn-atom,
+#allrecords .t-feed,
+#allrecords .t-store,
+#allrecords .t706__cartwin,
+#allrecords .t972,
+#allrecords .t985,
+#allrecords .nav-help,
+#allrecords .nf-body,
+#rec969552191,
+#nav-global-audio-player,
+#nav-global-audio-player button,
+button,
+input,
+textarea,
+select {
+  font-family: var(--nav-font) !important;
+}
+
+html,
+body,
+#allrecords {
+  font-synthesis: none;
+}
+
+#allrecords .t-text,
+#allrecords .t-descr,
+#allrecords .t-input,
+#allrecords .t-select,
+#allrecords .t-form__successbox {
+  font-weight: 400;
+}
+
+#allrecords strong,
+#allrecords b {
+  font-weight: 700;
+}
+
+#allrecords a:focus-visible,
+#allrecords button:focus-visible,
+#allrecords input:focus-visible,
+#allrecords textarea:focus-visible,
+#allrecords select:focus-visible,
+#nav-global-audio-player button:focus-visible {
+  outline: 2px solid var(--nav-signal) !important;
+  outline-offset: 3px !important;
+  box-shadow: none !important;
+}
+
+/* Shared Tilda controls */
+#allrecords .t-submit,
+#allrecords .t-store__card__btn,
+#allrecords .t-store__prod-popup__btn,
+#allrecords .t706__cartwin .t-btn {
+  min-height: 44px;
+  border-radius: var(--nav-control-radius) !important;
+  font-size: 14px !important;
+  line-height: 18px !important;
+  font-weight: 600 !important;
+}
+
+/* Shared footer: the published mobile size was 8px. */
+@media (max-width: 639px) {
+  #rec840991162 .tn-elem[data-elem-type="text"] .tn-atom,
+  #rec840991162 a {
+    font-size: 12px !important;
+    line-height: 16px !important;
+  }
+}
+
+/* Raise only Tilda text atoms that explicitly request unsafe mobile sizes. */
+@media (max-width: 639px) {
+  #allrecords .tn-elem[data-elem-type="text"][data-field-fontsize-res-320-value="7"] .tn-atom,
+  #allrecords .tn-elem[data-elem-type="text"][data-field-fontsize-res-320-value="8"] .tn-atom,
+  #allrecords .tn-elem[data-elem-type="text"][data-field-fontsize-res-320-value="9"] .tn-atom,
+  #allrecords .tn-elem[data-elem-type="text"][data-field-fontsize-res-320-value="10"] .tn-atom {
+    font-size: 12px !important;
+    line-height: 16px !important;
+  }
+}
+
+/* Blog */
+#allrecords[data-tilda-page-alias="blog"] .t-feed__parts-switch-btn,
+#allrecords[data-tilda-page-alias="blog"] .t-feed__post-label,
+#allrecords[data-tilda-page-alias="blog"] .t-feed__post-tag,
+#allrecords[data-tilda-page-alias="blog"] .t-feed__post-date {
+  font-size: 12px !important;
+  line-height: 16px !important;
+}
+
+#allrecords[data-tilda-page-alias="blog"] .t-feed__post-title {
+  font-size: 18px !important;
+  line-height: 22px !important;
+  font-weight: 600 !important;
+}
+
+#allrecords[data-tilda-page-alias="blog"] .t-feed__post-descr {
+  font-size: 14px !important;
+  line-height: 20px !important;
+}
+
+#allrecords[data-tilda-page-alias="blog"] .t-feed__post-popup__text {
+  max-width: 720px;
+  margin-inline: auto;
+  font-size: 17px !important;
+  line-height: 28px !important;
+}
+
+#allrecords[data-tilda-page-alias="blog"] .t-feed__post-popup__title-wrapper {
+  font-family: var(--nav-font) !important;
+  font-weight: 700 !important;
+}
+
+/* Shop and cart */
+#allrecords[data-tilda-page-alias="shop"] .t-store__card__title {
+  font-size: 20px !important;
+  line-height: 24px !important;
+  font-weight: 600 !important;
+}
+
+#allrecords[data-tilda-page-alias="shop"] .t-store__card__descr,
+#allrecords[data-tilda-page-alias="shop"] .t-store__prod-popup__descr {
+  font-size: 14px !important;
+  line-height: 20px !important;
+}
+
+#allrecords[data-tilda-page-alias="shop"] .t-store__card__price,
+#allrecords[data-tilda-page-alias="shop"] .t-store__prod-popup__price {
+  font-size: 18px !important;
+  line-height: 22px !important;
+  font-weight: 600 !important;
+}
+
+#allrecords[data-tilda-page-alias="shop"] .t-store__prod-popup__title {
+  font-size: 28px !important;
+  line-height: 32px !important;
+  font-weight: 700 !important;
+}
+
+#allrecords[data-tilda-page-alias="shop"] .t706__carticon-counter {
+  min-width: 18px;
+  min-height: 18px;
+  font-size: 11px !important;
+  line-height: 18px !important;
+}
+
+@media (max-width: 639px) {
+  #allrecords[data-tilda-page-alias="shop"] .tn-elem[data-elem-type="text"][data-field-fontsize-res-320-value="12"] .tn-atom {
+    font-size: 14px !important;
+    line-height: 20px !important;
+  }
+}
+
+/* Contacts knowledge hub */
+#allrecords[data-tilda-page-alias="contacts"] .nav-help {
+  --lime: var(--nav-signal);
+  --line: rgba(255, 255, 255, .22);
+  font-family: var(--nav-font) !important;
+}
+
+#allrecords[data-tilda-page-alias="contacts"] .nav-help__eyebrow,
+#allrecords[data-tilda-page-alias="contacts"] .nav-help__tabs button {
+  font-size: 12px !important;
+  line-height: 16px !important;
+}
+
+#allrecords[data-tilda-page-alias="contacts"] .nav-help__search,
+#allrecords[data-tilda-page-alias="contacts"] .nav-help__tabs button,
+#allrecords[data-tilda-page-alias="contacts"] .nav-help__footer > a {
+  border-radius: var(--nav-control-radius) !important;
+}
+
+#allrecords[data-tilda-page-alias="contacts"] .nav-help__tabs button,
+#allrecords[data-tilda-page-alias="contacts"] .nav-help__footer > a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#allrecords[data-tilda-page-alias="contacts"] .nav-help__tabs button[aria-selected="true"] {
+  background: var(--nav-signal) !important;
+  border-color: var(--nav-signal) !important;
+  color: #fff !important;
+}
+
+#allrecords[data-tilda-page-alias="contacts"] .nav-help__eyebrow span,
+#allrecords[data-tilda-page-alias="contacts"] .nav-help__footer > div > span {
+  border-radius: 1px !important;
+  background: var(--nav-signal) !important;
+  box-shadow: none !important;
+}
+
+#allrecords[data-tilda-page-alias="contacts"] .nav-help__search:focus-within {
+  border-color: var(--nav-signal) !important;
+  box-shadow: var(--nav-focus) !important;
+}
+
+#allrecords[data-tilda-page-alias="contacts"] .nav-help__item[open] {
+  border-color: rgba(214, 13, 59, .72) !important;
+}
+
+#allrecords[data-tilda-page-alias="contacts"] .nav-help__item a {
+  text-decoration-color: var(--nav-signal) !important;
+}
+
+/* Field Cases keeps its green local signal but joins the type system. */
+#allrecords[data-tilda-page-alias="field-cases"] .nf-body,
+#allrecords[data-tilda-page-alias="field-cases"] .nf-body button,
+#allrecords[data-tilda-page-alias="field-cases"] .nf-body a {
+  font-family: var(--nav-font) !important;
+}
+
+#allrecords[data-tilda-page-alias="field-cases"] .nf-meta,
+#allrecords[data-tilda-page-alias="field-cases"] .nf-source,
+#allrecords[data-tilda-page-alias="field-cases"] .nf-num {
+  font-size: 11px !important;
+  line-height: 14px !important;
+}
+
+#allrecords[data-tilda-page-alias="field-cases"] .nf-entry-actions button,
+#allrecords[data-tilda-page-alias="field-cases"] .nf-choice,
+#allrecords[data-tilda-page-alias="field-cases"] .nf-next,
+#allrecords[data-tilda-page-alias="field-cases"] .nf-restart {
+  min-height: 44px;
+  font-family: var(--nav-font) !important;
+}
+
+/* Code loaders */
+#allrecords .TiCodeLoader,
+#allrecords .TiCodePercentage,
+#allrecords .TiCodeText,
+#allrecords .kl-world__loader,
+#allrecords .kl-world__loader-progress,
+#allrecords .kl-world__loader-text {
+  font-family: var(--nav-font) !important;
+}
+
+#allrecords .TiCodeText,
+#allrecords .kl-world__loader-text {
+  font-size: 14px !important;
+  line-height: 20px !important;
+}
+
+/* Page-specific reading floors */
+@media (max-width: 639px) {
+  #allrecords[data-tilda-page-alias="krug"] .tn-elem[data-elem-type="text"][data-field-fontsize-res-320-value="12"] .tn-atom {
+    font-size: 14px !important;
+    line-height: 20px !important;
+  }
+
+  #allrecords[data-tilda-page-alias="gear"] .tn-elem[data-elem-type="text"][data-field-fontsize-res-320-value="12"] .tn-atom {
+    font-size: 16px !important;
+    line-height: 24px !important;
+  }
+
+  #allrecords[data-tilda-page-alias="community"] .tn-elem[data-elem-type="text"][data-field-fontsize-res-320-value="10"] .tn-atom {
+    font-size: 14px !important;
+    line-height: 20px !important;
+  }
+}
+
+/* Persistent audio UI */
+#nav-global-audio-player .nav-audio-toggle {
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+  min-height: 44px !important;
+  border-radius: var(--nav-control-radius) !important;
+  font: 600 14px/18px var(--nav-font) !important;
+}
+
+#nav-global-audio-player .nav-audio-title {
+  font: 400 12px/16px var(--nav-font) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #allrecords *,
+  #nav-global-audio-player * {
+    scroll-behavior: auto !important;
+  }
+}

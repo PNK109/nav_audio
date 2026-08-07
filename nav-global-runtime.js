@@ -1,6 +1,21 @@
 (function () {
   'use strict';
 
+  var runtimeScript = document.currentScript;
+
+  function injectDesignSystem() {
+    if (document.getElementById('nav-design-system-v1')) return;
+    if (!runtimeScript || !runtimeScript.src) return;
+
+    var stylesheet = document.createElement('link');
+    stylesheet.id = 'nav-design-system-v1';
+    stylesheet.rel = 'stylesheet';
+    stylesheet.href = new URL('nav-design-system-v1.css', runtimeScript.src).href;
+    document.head.appendChild(stylesheet);
+  }
+
+  injectDesignSystem();
+
   /*
    * Reserve the public layer IDs before Tilda's inline DOMContentLoaded
    * handlers run. This prevents the legacy, repaint-heavy canvas effects from

@@ -17,6 +17,97 @@
     document.head.appendChild(stylesheet);
   }
 
+
+  function initPrivateCourseCommerce() {
+    var route = window.location.pathname.replace(/\/+$/, '') || '/';
+    var markerKey = 'nav.checkout.context.v1';
+    var privateProductIds = ['238824202294', '205660180354', '399321648234'];
+
+    if (route === '/shop') {
+      var style = document.createElement('style');
+      style.id = 'nav-private-course-products';
+      style.textContent = privateProductIds.map(function (id) {
+        return [
+          '.js-product[data-product-uid="' + id + '"]',
+          '.t-store__card[data-product-uid="' + id + '"]',
+          '[data-product-id="' + id + '"]',
+          '[data-product-lid="' + id + '"]'
+        ].join(',') + '{display:none!important}';
+      }).join('\n');
+      document.head.appendChild(style);
+
+      var selectors = privateProductIds.reduce(function (items, id) {
+        return items.concat([
+          '.js-product[data-product-uid="' + id + '"]',
+          '.t-store__card[data-product-uid="' + id + '"]',
+          '[data-product-id="' + id + '"]',
+          '[data-product-lid="' + id + '"]'
+        ]);
+      }, []).join(',');
+
+      function removePrivateCards() {
+        if (!selectors) return;
+        var cards = document.querySelectorAll(selectors);
+        for (var index = 0; index < cards.length; index++) cards[index].remove();
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', removePrivateCards, {once:true});
+      } else {
+        removePrivateCards();
+      }
+
+      var shopObserver = new MutationObserver(removePrivateCards);
+      shopObserver.observe(document.documentElement, {childList:true, subtree:true});
+      window.addEventListener('pagehide', function () { shopObserver.disconnect(); }, {once:true});
+    }
+
+    if (route === '/kl-pay') {
+      function markCourseCheckout() {
+        try {
+          localStorage.setItem(markerKey, JSON.stringify({
+            type: 'kl',
+            updatedAt: Date.now()
+          }));
+        } catch (error) {}
+      }
+
+      document.addEventListener('click', function (event) {
+        var target = event.target && event.target.closest
+          ? event.target.closest(
+            '.js-store-prod-btn,.t-store__card__btn,.t706__submit,' +
+            '.t706__cartwin-form .t-submit'
+          )
+          : null;
+        if (target) markCourseCheckout();
+      }, true);
+
+      document.addEventListener('submit', function (event) {
+        if (
+          event.target &&
+          event.target.closest &&
+          event.target.closest('.t706__cartwin-form,.t-form')
+        ) {
+          markCourseCheckout();
+        }
+      }, true);
+    }
+
+    if (route === '/success') {
+      try {
+        var marker = JSON.parse(localStorage.getItem(markerKey) || 'null');
+        if (
+          marker &&
+          marker.type === 'kl' &&
+          Date.now() - Number(marker.updatedAt || 0) < 172800000
+        ) {
+          localStorage.removeItem(markerKey);
+          window.location.replace('/kl-success' + window.location.search);
+        }
+      } catch (error) {}
+    }
+  }
+
   function injectCanonicalPreloaderStyles() {
     if (document.getElementById('nav-canonical-preloader-styles')) return;
 
@@ -152,6 +243,7 @@
   }
 
   injectDesignSystem();
+  initPrivateCourseCommerce();
   injectCanonicalPreloaderStyles();
   initHomepageEmbedShell();
 

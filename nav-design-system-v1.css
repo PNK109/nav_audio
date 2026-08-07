@@ -118,6 +118,20 @@ select {
   font-family: var(--nav-font) !important;
 }
 
+/* Custom HTML applications outside Tilda's standard text atoms. */
+#allrecords#allrecords #nav-gen,
+#allrecords#allrecords #nav-gen *,
+#allrecords#allrecords #klf-root,
+#allrecords#allrecords #klf-root *,
+#allrecords#allrecords #kl2-root,
+#allrecords#allrecords #kl2-root *,
+#allrecords#allrecords #kl3-root,
+#allrecords#allrecords #kl3-root *,
+#allrecords#allrecords .nav-legal,
+#allrecords#allrecords .nav-legal * {
+  font-family: var(--nav-font) !important;
+}
+
 html,
 body,
 #allrecords {

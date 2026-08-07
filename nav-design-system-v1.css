@@ -84,52 +84,37 @@ select {
  * and artwork remain untouched.
  */
 .t-skiplink,
-#allrecords#allrecords h1,
-#allrecords#allrecords h2,
-#allrecords#allrecords h3,
-#allrecords#allrecords h4,
-#allrecords#allrecords h5,
-#allrecords#allrecords h6,
-#allrecords#allrecords p,
-#allrecords#allrecords li,
-#allrecords#allrecords dt,
-#allrecords#allrecords dd,
-#allrecords#allrecords blockquote,
-#allrecords#allrecords figcaption,
-#allrecords#allrecords th,
-#allrecords#allrecords td,
-#allrecords#allrecords label,
-#allrecords#allrecords a,
-#allrecords#allrecords button,
-#allrecords#allrecords input,
-#allrecords#allrecords textarea,
-#allrecords#allrecords select,
-#allrecords#allrecords option,
-#allrecords#allrecords .t-input-phonemask__select-code,
-#allrecords#allrecords .nav-pd-consent,
-#allrecords#allrecords .nav-pd-consent span,
-#allrecords#allrecords .nav-offer-consent,
-#allrecords#allrecords .nav-offer-consent span,
-#allrecords#allrecords .nav-blog-taxonomy,
-#allrecords#allrecords .nav-blog-taxonomy span,
-#allrecords#allrecords .nav-blog-card-category,
-#allrecords#allrecords .nf-body,
-#allrecords#allrecords .nf-body span,
-#allrecords#allrecords .nf-body div {
-  font-family: var(--nav-font) !important;
-}
-
-/* Custom HTML applications outside Tilda's standard text atoms. */
-#allrecords#allrecords #nav-gen,
-#allrecords#allrecords #nav-gen *,
-#allrecords#allrecords #klf-root,
-#allrecords#allrecords #klf-root *,
-#allrecords#allrecords #kl2-root,
-#allrecords#allrecords #kl2-root *,
-#allrecords#allrecords #kl3-root,
-#allrecords#allrecords #kl3-root *,
-#allrecords#allrecords .nav-legal,
-#allrecords#allrecords .nav-legal * {
+#allrecords h1,
+#allrecords h2,
+#allrecords h3,
+#allrecords h4,
+#allrecords h5,
+#allrecords h6,
+#allrecords p,
+#allrecords li,
+#allrecords dt,
+#allrecords dd,
+#allrecords blockquote,
+#allrecords figcaption,
+#allrecords th,
+#allrecords td,
+#allrecords label,
+#allrecords a,
+#allrecords button,
+#allrecords input,
+#allrecords textarea,
+#allrecords select,
+#allrecords option,
+#allrecords .t-input-phonemask__select-code,
+#allrecords .nav-pd-consent,
+#allrecords .nav-pd-consent span,
+#allrecords .nav-offer-consent,
+#allrecords .nav-offer-consent span,
+#allrecords .nav-blog-taxonomy,
+#allrecords .nav-blog-taxonomy span,
+#allrecords .nf-body,
+#allrecords .nf-body span,
+#allrecords .nf-body div {
   font-family: var(--nav-font) !important;
 }
 
@@ -271,7 +256,12 @@ body,
 #allrecords[data-tilda-page-alias="contacts"] .nav-help {
   --lime: var(--nav-signal);
   --line: rgba(255, 255, 255, .22);
+  background: #020202 !important;
   font-family: var(--nav-font) !important;
+}
+
+#allrecords[data-tilda-page-alias="contacts"] .nav-help__noise {
+  display: none !important;
 }
 
 #allrecords[data-tilda-page-alias="contacts"] .nav-help__eyebrow,
@@ -318,6 +308,37 @@ body,
 
 #allrecords[data-tilda-page-alias="contacts"] .nav-help__item a {
   text-decoration-color: var(--nav-signal) !important;
+}
+
+/* Search keeps the black input shell, then switches to black text on sky. */
+#allrecords .t-search-widget__input:focus,
+#allrecords .t-search-widget__input:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+#allrecords .t-search-widget__blockinput:hover,
+#allrecords .t-search-widget__blockinput:focus-within {
+  border-color: #fff !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+#allrecords .t-search-widget__popup,
+#allrecords .t-search-widget__popup-container,
+#allrecords .t-search-widget__query-result,
+#allrecords .t-search-widget__resultwrapper,
+#allrecords .t-search-widget__result,
+#allrecords .t-search-widget__result a,
+#allrecords .t-search-widget__result__title,
+#allrecords .t-search-widget__result__body,
+#allrecords .t-search-widget__result b {
+  color: #020202 !important;
+  text-shadow: none !important;
+}
+
+#allrecords .t-search-widget__query-result {
+  opacity: .72 !important;
 }
 
 /* Field Cases keeps its green local signal but joins the type system. */
@@ -378,7 +399,7 @@ body,
   height: 44px !important;
   min-width: 44px !important;
   min-height: 44px !important;
-  border-radius: var(--nav-control-radius) !important;
+  border-radius: 50% !important;
   font: 600 14px/18px var(--nav-font) !important;
 }
 

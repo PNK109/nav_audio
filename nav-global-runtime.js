@@ -538,6 +538,14 @@
         '  border-radius: 2px !important;',
         '  box-shadow: 8px 8px 0 rgba(18, 59, 82, .32) !important;',
         '}',
+        '.t706__cartwin-bottom {',
+        '  color: #0b1822 !important;',
+        '  background: transparent !important;',
+        '}',
+        '.t706__cartwin-bottom * {',
+        '  color: #0b1822 !important;',
+        '  text-shadow: none !important;',
+        '}',
         '.t706__cartwin-heading,',
         '.t706__product-title,',
         '.t706__product-title a,',
@@ -859,6 +867,11 @@
 
     audio.id = 'nav-global-audio';
     audio.preload = 'auto';
+    audio.controls = false;
+    audio.removeAttribute('controls');
+    audio.setAttribute('aria-hidden', 'true');
+    audio.tabIndex = -1;
+    audio.style.display = 'none';
     audio.volume = 0.82;
     player.id = 'nav-global-audio-player';
     toggle.type = 'button';

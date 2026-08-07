@@ -78,6 +78,46 @@ select {
   font-family: var(--nav-font) !important;
 }
 
+/*
+ * Tilda and several legacy HTML blocks set their own families with
+ * !important. Keep the override on semantic text and controls so icon fonts
+ * and artwork remain untouched.
+ */
+.t-skiplink,
+#allrecords h1,
+#allrecords h2,
+#allrecords h3,
+#allrecords h4,
+#allrecords h5,
+#allrecords h6,
+#allrecords p,
+#allrecords li,
+#allrecords dt,
+#allrecords dd,
+#allrecords blockquote,
+#allrecords figcaption,
+#allrecords th,
+#allrecords td,
+#allrecords label,
+#allrecords a,
+#allrecords button,
+#allrecords input,
+#allrecords textarea,
+#allrecords select,
+#allrecords option,
+#allrecords .t-input-phonemask__select-code,
+#allrecords .nav-pd-consent,
+#allrecords .nav-pd-consent span,
+#allrecords .nav-offer-consent,
+#allrecords .nav-offer-consent span,
+#allrecords .nav-blog-taxonomy,
+#allrecords .nav-blog-taxonomy span,
+#allrecords .nf-body,
+#allrecords .nf-body span,
+#allrecords .nf-body div {
+  font-family: var(--nav-font) !important;
+}
+
 html,
 body,
 #allrecords {

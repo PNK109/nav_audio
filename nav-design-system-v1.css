@@ -160,21 +160,22 @@ body,
   font-weight: 600 !important;
 }
 
-/* Shared footer: the published mobile size was 8px. */
-@media (max-width: 639px) {
-  #rec840991162 .tn-elem[data-elem-type="text"] .tn-atom,
-  #rec840991162 a {
-    font-size: 12px !important;
-    line-height: 16px !important;
-  }
+/* The hand-positioned footer keeps its original Tilda typography and wraps. */
+#allrecords #rec840991162,
+#allrecords #rec840991162 .tn-atom,
+#allrecords #rec840991162 .tn-atom__button-text,
+#allrecords #rec840991162 a,
+#allrecords #rec840991162 span {
+  font-family: "InterTightSuisseRG", Arial, sans-serif !important;
+  font-synthesis: auto;
 }
 
 /* Raise only Tilda text atoms that explicitly request unsafe mobile sizes. */
 @media (max-width: 639px) {
-  #allrecords .tn-elem[data-elem-type="text"][data-field-fontsize-res-320-value="7"] .tn-atom,
-  #allrecords .tn-elem[data-elem-type="text"][data-field-fontsize-res-320-value="8"] .tn-atom,
-  #allrecords .tn-elem[data-elem-type="text"][data-field-fontsize-res-320-value="9"] .tn-atom,
-  #allrecords .tn-elem[data-elem-type="text"][data-field-fontsize-res-320-value="10"] .tn-atom {
+  #allrecords > .r:not(#rec840991162) .tn-elem[data-elem-type="text"][data-field-fontsize-res-320-value="7"] .tn-atom,
+  #allrecords > .r:not(#rec840991162) .tn-elem[data-elem-type="text"][data-field-fontsize-res-320-value="8"] .tn-atom,
+  #allrecords > .r:not(#rec840991162) .tn-elem[data-elem-type="text"][data-field-fontsize-res-320-value="9"] .tn-atom,
+  #allrecords > .r:not(#rec840991162) .tn-elem[data-elem-type="text"][data-field-fontsize-res-320-value="10"] .tn-atom {
     font-size: 12px !important;
     line-height: 16px !important;
   }
@@ -363,18 +364,6 @@ body,
   font-family: var(--nav-font) !important;
 }
 
-/* Code loaders */
-#allrecords .TiCodeLoader,
-#allrecords .TiCodePercentage,
-#allrecords .TiCodeText {
-  font-family: var(--nav-font) !important;
-}
-
-#allrecords .TiCodeText {
-  font-size: 14px !important;
-  line-height: 20px !important;
-}
-
 /* Page-specific reading floors */
 @media (max-width: 639px) {
   #allrecords[data-tilda-page-alias="krug"] .tn-elem[data-elem-type="text"][data-field-fontsize-res-320-value="12"] .tn-atom {
@@ -395,12 +384,41 @@ body,
 
 /* Persistent audio UI */
 #nav-global-audio-player .nav-audio-toggle {
-  width: 44px !important;
-  height: 44px !important;
-  min-width: 44px !important;
-  min-height: 44px !important;
+  position: relative !important;
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  min-height: 32px !important;
+  padding: 0 !important;
   border-radius: 50% !important;
-  font: 600 14px/18px var(--nav-font) !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  -webkit-appearance: none !important;
+  appearance: none !important;
+}
+
+#nav-global-audio-player .nav-audio-toggle::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+  display: block !important;
+  width: 0 !important;
+  height: 0 !important;
+  border-top: 5px solid transparent !important;
+  border-right: 0 !important;
+  border-bottom: 5px solid transparent !important;
+  border-left: 8px solid currentColor !important;
+  background: none !important;
+  transform: translate(-38%, -50%) !important;
+}
+
+#nav-global-audio-player.is-playing .nav-audio-toggle::before {
+  width: 8px !important;
+  height: 10px !important;
+  border: 0 !important;
+  background: linear-gradient(to right, currentColor 0 3px, transparent 3px 5px, currentColor 5px 8px) !important;
+  transform: translate(-50%, -50%) !important;
 }
 
 #nav-global-audio-player .nav-audio-title {

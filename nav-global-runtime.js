@@ -7,6 +7,9 @@
     if (document.getElementById('nav-design-system-v1')) return;
     if (!runtimeScript || !runtimeScript.src) return;
 
+    var route = window.location.pathname.replace(/\/+$/, '') || '/';
+    if (route === '/kl') return;
+
     var stylesheet = document.createElement('link');
     stylesheet.id = 'nav-design-system-v1';
     stylesheet.rel = 'stylesheet';

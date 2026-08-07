@@ -2,6 +2,7 @@
  * NAV design system v1
  * Scope: editable HTML text and interface controls only.
  * Artwork, raster lettering and collage imagery are intentionally untouched.
+ * /kl is excluded by nav-global-runtime.js to preserve its Win95 system.
  */
 
 @font-face {
@@ -289,15 +290,11 @@ body,
 /* Code loaders */
 #allrecords .TiCodeLoader,
 #allrecords .TiCodePercentage,
-#allrecords .TiCodeText,
-#allrecords .kl-world__loader,
-#allrecords .kl-world__loader-progress,
-#allrecords .kl-world__loader-text {
+#allrecords .TiCodeText {
   font-family: var(--nav-font) !important;
 }
 
-#allrecords .TiCodeText,
-#allrecords .kl-world__loader-text {
+#allrecords .TiCodeText {
   font-size: 14px !important;
   line-height: 20px !important;
 }

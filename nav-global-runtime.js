@@ -2,13 +2,18 @@
   'use strict';
 
   var runtimeScript = document.currentScript;
+  var runtimeRoute = window.location.pathname.replace(/\/+$/, '') || '/';
+  var runtimeVisualSafeMode =
+    runtimeRoute === '/kl' ||
+    runtimeRoute === '/kl-pay' ||
+    runtimeRoute === '/kl-success' ||
+    runtimeRoute.indexOf('/members') === 0;
 
   function injectDesignSystem() {
     if (document.getElementById('nav-design-system-v1')) return;
     if (!runtimeScript || !runtimeScript.src) return;
 
-    var route = window.location.pathname.replace(/\/+$/, '') || '/';
-    if (route === '/kl' || route.indexOf('/members') === 0) return;
+    if (runtimeVisualSafeMode) return;
 
     var stylesheet = document.createElement('link');
     stylesheet.id = 'nav-design-system-v1';
@@ -109,6 +114,7 @@
   }
 
   function injectCanonicalPreloaderStyles() {
+    if (runtimeVisualSafeMode) return;
     if (document.getElementById('nav-canonical-preloader-styles')) return;
 
     var styles = document.createElement('style');
@@ -252,7 +258,9 @@
    * handlers run. This prevents the legacy, repaint-heavy canvas effects from
    * starting while this external runtime is loading.
    */
-  var effectIds = ['nav-site-dust', 'nav-site-film-grain'];
+  var effectIds = runtimeVisualSafeMode
+    ? []
+    : ['nav-site-dust', 'nav-site-film-grain'];
   for (var reservedIndex = 0; reservedIndex < effectIds.length; reservedIndex++) {
     if (!document.getElementById(effectIds[reservedIndex])) {
       var reservation = document.createElement('i');
@@ -1403,6 +1411,7 @@
   }
 
   function initRuntime() {
+    if (runtimeVisualSafeMode) return;
     injectCanonicalPreloaderStyles();
     initHomepageEmbedShell();
     injectOptimizedEffectStyles();
